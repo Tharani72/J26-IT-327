@@ -1,0 +1,11 @@
+{
+  "sessionId": "demo-001",
+  "lessonId": "sign-A",
+  "component": "gaze-interaction",
+  "eventType": "target_selected",
+  "timestamp": "2026-09-20T15:30:00+05:30",
+  "data": {
+    "targetId": "start-practice",
+    "dwellTimeMs": 1200
+  }
+}
