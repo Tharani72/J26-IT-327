@@ -1,4 +1,4 @@
-# J26-IT-327 — OmniSign SL
+# J26-IT-327 - OmniSign SL
 
 **Project:** Sign Language Learning for Primary School Students Using Gaze Detection and Smart Gloves
 
