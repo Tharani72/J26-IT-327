@@ -1,0 +1,4 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+export default function HomeFeatureSection({ copy, number, visualClassName, image, reversed = false, }) {
+    return (_jsxs("article", { className: reversed ? "home-feature-section is-reversed" : "home-feature-section", children: [_jsxs("div", { className: "home-feature-visual " + visualClassName, "aria-hidden": "true", children: [_jsx("img", { src: image, alt: "", loading: "lazy" }), _jsx("span", { className: "home-feature-visual-badge", children: number })] }), _jsxs("div", { className: "home-feature-copy", children: [_jsx("span", { className: "home-feature-number", children: number }), _jsx("h2", { children: copy.heading }), _jsx("p", { children: copy.description }), _jsx("ul", { className: "home-feature-highlights", children: copy.highlights.map((highlight) => _jsx("li", { children: highlight }, highlight)) })] })] }));
+}
