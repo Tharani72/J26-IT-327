@@ -1,0 +1,1114 @@
+.student-dashboard {
+  min-height: calc(100vh - 66px);
+  margin-top: 66px;
+}
+
+.student-dashboard-sidebar {
+  position: fixed;
+  z-index: 900;
+  top: 66px;
+  left: 0;
+  box-sizing: border-box;
+  width: 260px;
+  height: calc(100vh - 66px);
+  padding: 18px 14px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-right: 1px solid rgba(32, 45, 161, 0.1);
+  background: #f8fbfd;
+  box-shadow: 4px 0 18px rgba(15, 23, 42, 0.12);
+}
+
+.student-dashboard-content {
+  box-sizing: border-box;
+  width: calc(100% - 260px);
+  min-height: calc(100vh - 66px);
+  margin-left: 260px;
+  padding: 28px 32px 40px;
+  background: #ffffff;
+}
+
+.student-dashboard-image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 20px;
+  object-fit: contain;
+  object-position: center;
+}
+
+@media (min-width: 1200px) {
+  .student-dashboard-image {
+    height: clamp(160px, calc(16.9vw - 55px), 180px);
+    object-fit: cover;
+    object-position: right 30%;
+  }
+}
+
+.student-dashboard-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  margin-top: 18px;
+}
+
+.student-summary-card {
+  display: flex;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 115px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #edf4f7;
+}
+
+.student-summary-card-main {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+}
+
+.student-summary-card-icon {
+  display: inline-flex;
+  box-sizing: border-box;
+  flex: 0 0 46px;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  color: #ffffff;
+}
+
+.student-summary-card-copy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.student-summary-card-title,
+.student-summary-card-subtitle {
+  display: block;
+  margin: 0;
+}
+
+.student-summary-card-title {
+  color: #111827;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.student-summary-card-subtitle {
+  margin-top: 2px;
+  color: #64717c;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.student-summary-card-value {
+  display: block;
+  margin-top: 5px;
+  color: #111111;
+  font-family: Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.student-summary-card-progress {
+  box-sizing: border-box;
+  height: 8px;
+  margin-left: 58px;
+  overflow: hidden;
+  border: 1px solid;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.student-summary-card-progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+
+@media (max-width: 1200px) {
+  .student-dashboard-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .student-dashboard-summary-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.learning-progress-card {
+  box-sizing: border-box;
+  width: calc(50% - 8px);
+  height: 266px;
+  margin-top: 16px;
+  padding: 8px 12px 6px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 5px 18px rgba(22, 48, 82, 0.1);
+}
+
+.learning-progress-header {
+  display: flex;
+  min-height: 23px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px 12px;
+}
+
+.learning-progress-heading {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+}
+
+.learning-progress-heading-icon {
+  display: block;
+  flex: 0 0 21px;
+  width: 21px;
+  height: 21px;
+  stroke: #202da1;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.learning-progress-heading h2 {
+  margin: 0;
+  color: #102f67;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.learning-progress-legend {
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px 14px;
+}
+
+.learning-progress-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #465367;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.learning-progress-legend-swatch {
+  display: inline-block;
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.learning-progress-plot {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  margin-top: 4px;
+}
+
+.learning-progress-y-axis {
+  position: absolute;
+  top: 9px;
+  bottom: 29px;
+  left: 0;
+  display: flex;
+  width: 36px;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #6b7787;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1;
+  text-align: right;
+}
+
+.learning-progress-plot-area {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  bottom: 20px;
+  left: 42px;
+}
+
+.learning-progress-plot-area svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.learning-progress-markers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.learning-progress-marker {
+  position: absolute;
+  box-sizing: border-box;
+  width: 11px;
+  height: 11px;
+  border: 2.5px solid;
+  border-radius: 50%;
+  background: #ffffff;
+  transform: translate(-50%, -50%);
+}
+
+.learning-progress-grid-line {
+  stroke: #e7edf4;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.learning-progress-x-axis {
+  position: absolute;
+  right: 4px;
+  bottom: 0;
+  left: 42px;
+  display: grid;
+  height: 18px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: end;
+  color: #6b7787;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+@media (max-width: 1200px) {
+  .learning-progress-card {
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .learning-progress-card {
+    height: auto;
+    min-height: 260px;
+    padding: 12px 12px 8px;
+  }
+
+  .learning-progress-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .learning-progress-legend {
+    justify-content: flex-start;
+    gap: 6px 10px;
+  }
+
+  .learning-progress-plot {
+    height: 195px;
+    margin-top: 6px;
+  }
+
+  .learning-progress-plot-area {
+    left: 36px;
+  }
+
+  .learning-progress-x-axis {
+    left: 36px;
+    font-size: 9px;
+  }
+
+  .learning-progress-y-axis {
+    top: 8px;
+    bottom: 30px;
+    width: 30px;
+    font-size: 10px;
+  }
+}
+
+.student-dashboard-analytics-row {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.student-dashboard-analytics-row .learning-progress-card {
+  width: 100%;
+  margin-top: 0;
+}
+
+.eye-gaze-analytics {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 16px;
+  overflow: hidden;
+  border: 1px solid #edf3f9;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 5px 18px rgba(22, 48, 82, 0.1);
+}
+
+.eye-gaze-header,
+.eye-gaze-title-group {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+}
+
+.eye-gaze-header {
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.eye-gaze-title-group {
+  gap: 9px;
+}
+
+.eye-gaze-header-icon {
+  display: inline-flex;
+  flex: 0 0 38px;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #eaf4ff;
+  color: #3478ff;
+}
+
+.eye-gaze-heading-copy {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+}
+
+.eye-gaze-heading-copy h2 {
+  margin: 0;
+  color: #102f67;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.eye-gaze-heading-copy > span {
+  color: #6b7787;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.eye-gaze-details-button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 5px 9px;
+  border: 1px solid #d8e9ff;
+  border-radius: 999px;
+  background: #f5faff;
+  color: #3478ff;
+  cursor: pointer;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.eye-gaze-details-button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.eye-gaze-content {
+  display: grid;
+  grid-template-columns: minmax(124px, 0.8fr) minmax(0, 1.65fr);
+  align-items: center;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.eye-gaze-overview {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.eye-gaze-ring {
+  position: relative;
+  width: 124px;
+  max-width: 100%;
+  aspect-ratio: 1;
+}
+
+.eye-gaze-ring > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.eye-gaze-ring-track,
+.eye-gaze-ring-progress {
+  fill: none;
+  stroke-width: 9;
+}
+
+.eye-gaze-ring-track {
+  stroke: #d9edff;
+}
+
+.eye-gaze-ring-progress {
+  stroke: #10c98a;
+  stroke-linecap: round;
+}
+
+.eye-gaze-ring-copy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.eye-gaze-ring-copy strong {
+  color: #102f67;
+  font-family: Arial, sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.eye-gaze-ring-copy > span {
+  color: #53657d;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.eye-gaze-status {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #e8faf2;
+  color: #11875f;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.eye-gaze-status svg {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.eye-gaze-metrics {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.eye-gaze-metric-card {
+  display: flex;
+  min-width: 0;
+  min-height: 68px;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 8px;
+  padding: 9px;
+  border: 1px solid #edf4fb;
+  border-radius: 12px;
+  background: #f5faff;
+}
+
+.eye-gaze-metric-icon {
+  display: inline-flex;
+  flex: 0 0 30px;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+}
+
+.eye-gaze-metric-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.eye-gaze-metric-icon--green {
+  background: #e4f8ef;
+  color: #10a875;
+}
+
+.eye-gaze-metric-icon--pink {
+  background: #fff0f4;
+  color: #e15d86;
+}
+
+.eye-gaze-metric-icon--blue {
+  background: #e8f2ff;
+  color: #3478ff;
+}
+
+.eye-gaze-metric-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.eye-gaze-metric-label {
+  overflow: hidden;
+  color: #63748a;
+  font-family: "Noto Sans Sinhala", Arial, sans-serif;
+  font-size: 10px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eye-gaze-metric-value {
+  color: #102f67;
+  font-family: "Noto Sans Sinhala", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+@media (max-width: 1200px) {
+  .student-dashboard-analytics-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .student-dashboard-analytics-row {
+    gap: 12px;
+  }
+
+  .eye-gaze-analytics {
+    width: 100%;
+    max-width: calc(100vw - 48px);
+    padding: 14px;
+  }
+
+  .eye-gaze-content {
+    grid-template-columns: minmax(110px, 0.7fr) minmax(0, 1.3fr);
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .eye-gaze-ring {
+    width: 112px;
+  }
+
+  .eye-gaze-metrics {
+    gap: 7px;
+  }
+
+  .eye-gaze-metric-card {
+    min-height: 64px;
+    gap: 6px;
+    padding: 7px;
+  }
+
+  .eye-gaze-metric-icon {
+    flex-basis: 26px;
+    width: 26px;
+    height: 26px;
+  }
+
+  .eye-gaze-metric-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .eye-gaze-header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .eye-gaze-heading-copy {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .eye-gaze-details-button {
+    margin-left: auto;
+    padding-inline: 7px;
+    font-size: 9px;
+  }
+
+  .eye-gaze-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .eye-gaze-overview {
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+  }
+}
+
+.student-dashboard-bottom-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.recent-learning-section,
+.recommended-lesson-section {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #edf3f9;
+  border-radius: 16px;
+  box-shadow: 0 5px 18px rgba(22, 48, 82, 0.09);
+}
+
+.recent-learning-section {
+  background: #ffffff;
+}
+
+.bottom-section-header,
+.bottom-section-heading {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+}
+
+.bottom-section-header {
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 13px;
+}
+
+.bottom-section-heading {
+  gap: 9px;
+}
+
+.recent-learning-heading-icon,
+.recommended-lesson-star {
+  display: inline-flex;
+  flex: 0 0 34px;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+}
+
+.recent-learning-heading-icon {
+  background: #eaf4ff;
+  color: #3478ff;
+}
+
+.bottom-section-heading h2,
+.recommended-lesson-header h2 {
+  margin: 0;
+  color: #102f67;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.recent-learning-all-button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 0 5px 6px;
+  border: 0;
+  background: transparent;
+  color: #3478ff;
+  cursor: pointer;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.recent-learning-all-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.recent-lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.recent-lesson-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #eaf0f6;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.recent-lesson-artwork {
+  display: flex;
+  height: 88px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.recent-lesson-artwork--single-hand {
+  background: #eaf4ff;
+}
+
+.recent-lesson-artwork--paired-hands {
+  background: #f1edff;
+}
+
+.recent-lesson-artwork--dog {
+  background: #fff3e5;
+}
+
+.recent-lesson-artwork--apple {
+  background: #fff0f0;
+}
+
+.lesson-illustration-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 96px;
+}
+
+.recent-lesson-copy {
+  padding: 9px 9px 10px;
+}
+
+.recent-lesson-copy h3,
+.recommended-lesson-copy h3 {
+  margin: 0;
+  color: #17345f;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.recent-lesson-copy h3 {
+  min-height: 33px;
+}
+
+.recent-lesson-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin-top: 7px;
+}
+
+.recent-lesson-meta time {
+  min-width: 0;
+  color: #748196;
+  font-family: Arial, sans-serif;
+  font-size: 9px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.recent-lesson-completion {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: #e6f8ef;
+  color: #11875f;
+  font-family: Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.recommended-lesson-section {
+  background: #fff8df;
+  border-color: #f6e9b8;
+}
+
+.recommended-lesson-header {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+}
+
+.recommended-lesson-star {
+  background: #fff0b8;
+  color: #e8ad16;
+}
+
+.recommended-lesson-header h2 {
+  font-size: 14px;
+}
+
+.recommended-lesson-panel {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  margin-top: 12px;
+  padding: 9px;
+  border: 1px solid rgba(240, 223, 164, 0.58);
+  border-radius: 13px;
+  background: #ffffff;
+}
+
+.recommended-lesson-artwork {
+  display: flex;
+  height: 88px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 9px;
+  background: #f1edff;
+}
+
+.recommended-lesson-copy {
+  min-width: 0;
+}
+
+.recommended-lesson-copy h3 {
+  font-size: 13px;
+}
+
+.recommended-lesson-copy p {
+  margin: 5px 0 0;
+  color: #65748a;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 10px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.recommended-lesson-button {
+  display: flex;
+  width: 100%;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: #3478ff;
+  box-shadow: 0 4px 10px rgba(52, 120, 255, 0.22);
+  color: #ffffff;
+  cursor: pointer;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.recommended-lesson-button svg {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+}
+
+@media (max-width: 1200px) {
+  .student-dashboard-bottom-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .recent-lesson-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .recent-learning-section,
+  .recommended-lesson-section {
+    padding: 13px;
+  }
+
+  .bottom-section-header {
+    align-items: flex-start;
+  }
+
+  .bottom-section-heading h2 {
+    font-size: 13px;
+  }
+
+  .recent-learning-all-button {
+    font-size: 10px;
+  }
+
+  .recommended-lesson-panel {
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 7px;
+    padding: 7px;
+  }
+}
+
+.student-dashboard-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.student-dashboard-button {
+  display: flex;
+  flex: 0 0 50px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 50px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #202da1;
+  cursor: pointer;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: left;
+  transition: background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.student-dashboard-button-icon {
+  display: inline-flex;
+  flex: 0 0 20px;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.student-dashboard-button-label {
+  min-width: 0;
+}
+
+.student-dashboard-button:hover {
+  transform: translateX(2px);
+  background: rgba(86, 189, 245, 0.14);
+  color: #202da1;
+}
+
+.student-dashboard-button:focus-visible {
+  outline: 2px solid #202da1;
+  outline-offset: 2px;
+}
+
+.student-dashboard-button.is-active {
+  background: #56bdf5;
+  box-shadow: 0 4px 12px rgba(32, 45, 161, 0.18);
+  color: #ffffff;
+}
+
+.student-dashboard-button.is-active:hover {
+  background: #45afe9;
+  color: #ffffff;
+}
+
+@media (max-width: 720px) {
+  .student-dashboard-content {
+    width: 100%;
+    min-height: calc(100vh - 66px);
+    margin-left: 0;
+    padding: 22px 16px 32px;
+  }
+
+
+  .student-dashboard-sidebar {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: 100%;
+    height: auto;
+    padding: 10px 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+  }
+
+  .student-dashboard-navigation {
+    flex-direction: row;
+    width: max-content;
+    gap: 4px;
+  }
+
+  .student-dashboard-button {
+    flex: 0 0 auto;
+    width: auto;
+    height: 44px;
+    padding: 8px 10px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .student-dashboard-button {
+    transition: none;
+  }
+}
