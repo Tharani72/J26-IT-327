@@ -1,0 +1,104 @@
+# ==========================================
+# Git Ignore Configuration for J26-IT-327
+# ==========================================
+
+# Python Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+*.venv/
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# Testing & Linting
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Node.js & Web Frameworks
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+build/
+
+# Operating System & IDE Files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Private gaze outputs (source and tests/fixtures stay visible)
+/gaze_tracking/data/**
+!/gaze_tracking/data/.gitkeep
+/gaze_tracking/personalization_results/
+/gaze_tracking/interaction_results/
+/gaze_tracking/evaluation_results/
+/gaze_tracking/selection_results/
+/gaze_tracking/models/personalized/
+# Historical local fits/metadata may also encode participant-derived data.
+/gaze_tracking/models/*.joblib
+# Historical local fits/metadata may also encode participant-derived data.
+/gaze_tracking/models/*.joblib
+/gaze_tracking/participant_images/
+/gaze_tracking/datasets/
+/gaze_tracking/private/
+/gaze_tracking/recordings/
+/gaze_tracking/session_recordings/
+/gaze_tracking/logs/
+/gaze_tracking/exports/
+/private_gaze_data/
+/participant_images/
+/session_recordings/
+/gaze_exports/
+/gaze_tracking/*.csv
+/gaze_tracking/*.jsonl
+/gaze_tracking/*.log
+/gaze_tracking/*.zip
+/gaze_tracking/camera_config.json
+/gaze_tracking/config.local.json
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.*.example
+**/secrets.local.json
+/firebase-service-account*.json
+/.aws/credentials
+/.aws/config
+!/gaze_tracking/tests/fixtures/**
+/.phase-a-preservation.json
+/.phase-a-test-results/
+
+# Generated frontend build state and locally trained general-model outputs
+*.tsbuildinfo
+/gaze_tracking/models/general/
+
+# Private correction workspaces: keep original backups and all operation outputs here.
+# --operation accepts arbitrary paths; other local locations need equivalent protection.
+/correction_operations/
+/gaze_tracking/correction_operations/
+/private/
+
+# Generated correction evidence/provenance, even outside the standard workspaces.
+backup_manifest.v1.json
+journal.v1.json
+file_hashes.v1.json
+preflight_evidence.v1.json
+verification.v1.json
+participant_correction.v1.json
+staged_session/
+archived_source/
+interrupted_staging_*/
