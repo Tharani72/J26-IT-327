@@ -1,0 +1,433 @@
+.teacher-dashboard {
+  min-height: calc(100vh - 66px);
+  margin-top: 66px;
+  background: #ffffff;
+}
+
+.teacher-dashboard-sidebar {
+  position: fixed;
+  z-index: 900;
+  top: 66px;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  width: 260px;
+  padding: 18px 14px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-right: 1px solid rgba(32, 45, 161, 0.1);
+  background: #f8fbfd;
+  box-shadow: 4px 0 18px rgba(15, 23, 42, 0.08);
+}
+
+.teacher-dashboard-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.teacher-dashboard-button {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 50px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #202da1;
+  cursor: pointer;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: left;
+  transition: background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.teacher-dashboard-button:hover {
+  transform: translateX(2px);
+  background: rgba(86, 189, 245, 0.14);
+}
+
+.teacher-dashboard-button:focus-visible {
+  outline: 2px solid #202da1;
+  outline-offset: 2px;
+}
+
+.teacher-dashboard-button.is-active {
+  background: #3478ff;
+  box-shadow: 0 4px 12px rgba(32, 45, 161, 0.18);
+  color: #ffffff;
+}
+
+.teacher-dashboard-button.is-active:hover {
+  background: #2869e8;
+}
+
+.teacher-dashboard-button-icon {
+  display: inline-flex;
+  flex: 0 0 22px;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+}
+
+.teacher-dashboard-button-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.teacher-dashboard-content {
+  box-sizing: border-box;
+  width: calc(100% - 260px);
+  min-height: calc(100vh - 66px);
+  margin-left: 260px;
+  padding: 34px 36px 48px;
+  background: #ffffff;
+}
+
+.teacher-dashboard-page-heading h1 {
+  margin: 0;
+  color: #102f67;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: clamp(23px, 2.2vw, 30px);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.teacher-dashboard-page-heading p {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) and (min-width: 721px) {
+  .teacher-dashboard-sidebar {
+    width: 224px;
+    padding-right: 11px;
+    padding-left: 11px;
+  }
+
+  .teacher-dashboard-button {
+    gap: 9px;
+    padding-right: 9px;
+    padding-left: 9px;
+    font-size: 12px;
+  }
+
+  .teacher-dashboard-content {
+    width: calc(100% - 224px);
+    margin-left: 224px;
+    padding: 28px 24px 40px;
+  }
+}
+
+@media (max-width: 720px) {
+  .teacher-dashboard-sidebar {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    width: 100%;
+    height: auto;
+    padding: 12px;
+    overflow: visible;
+    border-right: 0;
+    border-bottom: 1px solid rgba(32, 45, 161, 0.1);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07);
+  }
+
+  .teacher-dashboard-navigation {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .teacher-dashboard-button {
+    min-height: 54px;
+    gap: 8px;
+    padding: 9px;
+    font-size: 12px;
+  }
+
+  .teacher-dashboard-content {
+    width: 100%;
+    min-height: calc(100vh - 66px);
+    margin-left: 0;
+    padding: 25px 20px 36px;
+  }
+
+  .teacher-dashboard-page-heading p {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 380px) {
+  .teacher-dashboard-sidebar {
+    padding: 9px;
+  }
+
+  .teacher-dashboard-navigation {
+    gap: 6px;
+  }
+
+  .teacher-dashboard-button {
+    min-height: 50px;
+    gap: 6px;
+    padding: 8px 7px;
+    font-size: 11px;
+  }
+
+  .teacher-dashboard-button-icon {
+    flex-basis: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .teacher-dashboard-content {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .teacher-dashboard-button {
+    transition: none;
+  }
+}
+.teacher-dashboard-banner {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  aspect-ratio: 4 / 1;
+  height: clamp(120px, 8.33vw, 140px);
+  min-height: 120px;
+  max-height: 140px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid #e2efff;
+  border-radius: 20px;
+  background: #eaf5ff;
+  box-shadow: 0 8px 24px rgba(35, 91, 156, 0.09);
+}
+
+@media (max-width: 900px) and (min-width: 721px) {
+  .teacher-dashboard-banner {
+    height: clamp(110px, 13.3vw, 120px);
+    min-height: 110px;
+    max-height: 120px;
+  }
+}
+
+@media (max-width: 720px) {
+  .teacher-dashboard-banner {
+    height: clamp(90px, 24vw, 110px);
+    min-height: 0;
+    max-height: none;
+    aspect-ratio: auto;
+    margin-bottom: 20px;
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 500px) {
+  .teacher-dashboard-banner {
+    height: clamp(90px, 24vw, 110px);
+  }
+}
+
+@media (max-width: 380px) {
+  .teacher-dashboard-banner {
+    height: 90px;
+  }
+}
+
+.teacher-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  align-items: stretch;
+}
+
+.teacher-summary-card {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  min-width: 0;
+  height: 136px;
+  min-height: 136px;
+  flex-direction: column;
+    padding: 13px 16px;
+  overflow: hidden;
+  border: 1px solid #e2ebf6;
+  border-radius: 16px;
+  background: #f5f9ff;
+  box-shadow: 0 5px 16px rgba(23, 54, 102, 0.07);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.teacher-summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 21px rgba(23, 54, 102, 0.11);
+}
+
+.teacher-summary-card--green {
+  border-color: #dcefe3;
+  background: #f3fbf5;
+}
+
+.teacher-summary-card--orange {
+  border-color: #f3e8d7;
+  background: #fffaf1;
+}
+
+.teacher-summary-main {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  grid-template-columns: 58px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+}
+
+.teacher-summary-icon-box {
+  display: inline-flex;
+  width: 58px;
+  height: 58px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: #e2efff;
+  color: #3478ff;
+}
+
+.teacher-summary-card--green .teacher-summary-icon-box {
+  background: #e0f5e7;
+  color: #28a768;
+}
+
+.teacher-summary-card--orange .teacher-summary-icon-box {
+  background: #fff0d6;
+  color: #e9952f;
+}
+
+.teacher-summary-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.teacher-summary-copy {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+}
+
+.teacher-summary-details {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) 26px;
+  align-items: end;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.teacher-summary-title {
+  display: block;
+  margin: 0;
+  color: #102f67;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.08;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.teacher-summary-value {
+  margin: 1px 0 0;
+  color: #173c7b;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.teacher-summary-description {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  margin: 0;
+  color: #64748b;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.1;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.teacher-summary-decoration {
+  display: block;
+  width: 26px;
+  height: 26px;
+  color: #91baf2;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.teacher-summary-card--green .teacher-summary-decoration {
+  color: #83c99b;
+}
+
+.teacher-summary-card--orange .teacher-summary-decoration {
+  color: #eab675;
+}
+
+@media (max-width: 1100px) {
+  .teacher-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 720px) {
+  .teacher-summary-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .teacher-summary-card {
+    height: auto;
+    min-height: 166px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .teacher-summary-card {
+    min-height: 158px;
+  }
+
+  .teacher-summary-title {
+    font-size: 15px;
+  }
+
+  .teacher-summary-value {
+    font-size: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .teacher-summary-card {
+    transition: none;
+  }
+}

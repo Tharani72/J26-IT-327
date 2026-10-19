@@ -1,0 +1,337 @@
+{
+  "source_note": "Synthetic raw values from Component 03 Expanded 10000 Records workbook, first five sessions for the five demo students. Feature engineering is performed by app.seed_sync using the verified Day 14 notebook formulas.",
+  "students": [
+    {
+      "student_code": "ST001",
+      "email": "student01@omnisign.demo",
+      "full_name": "\\u0db1\\u0dd2\\u0db8\\u0dbd\\u0dd2",
+      "grade": "3 \\u0dc1\\u0dca\\u200d\\u0dbb\\u0dda\\u0dab\\u0dd2\\u0dba"
+    },
+    {
+      "student_code": "ST002",
+      "email": "student02@omnisign.demo",
+      "full_name": "\\u0d9a\\u0dc0\\u0dd2\\u0db3\\u0dd4",
+      "grade": "4 \\u0dc1\\u0dca\\u200d\\u0dbb\\u0dda\\u0dab\\u0dd2\\u0dba"
+    },
+    {
+      "student_code": "ST003",
+      "email": "student03@omnisign.demo",
+      "full_name": "\\u0dc3\\u0dd9\\u0dc0\\u0dca\\u0db8\\u0dd2",
+      "grade": "3 \\u0dc1\\u0dca\\u200d\\u0dbb\\u0dda\\u0dab\\u0dd2\\u0dba"
+    },
+    {
+      "student_code": "ST004",
+      "email": "student04@omnisign.demo",
+      "full_name": "\\u0dad\\u0dbb\\u0dd4\\u0dc2\\u0dd2",
+      "grade": "5 \\u0dc1\\u0dca\\u200d\\u0dbb\\u0dda\\u0dab\\u0dd2\\u0dba"
+    },
+    {
+      "student_code": "ST005",
+      "email": "student05@omnisign.demo",
+      "full_name": "\\u0daf\\u0dd2\\u0db1\\u0dd4\\u0d9a",
+      "grade": "4 \\u0dc1\\u0dca\\u200d\\u0dbb\\u0dda\\u0dab\\u0dd2\\u0dba"
+    }
+  ],
+  "raw_sessions": [
+    {
+      "student_id": "ST001",
+      "session_number": 1,
+      "gesture_accuracy": 61.79,
+      "attention_score": 67.32,
+      "response_time": 6.14,
+      "mistake_count": 0,
+      "attempt_count": 2,
+      "looking_away_count": 4,
+      "on_task_ratio": 0.81,
+      "completion_rate": 63.1
+    },
+    {
+      "student_id": "ST001",
+      "session_number": 2,
+      "gesture_accuracy": 47.21,
+      "attention_score": 83.84,
+      "response_time": 5.16,
+      "mistake_count": 3,
+      "attempt_count": 5,
+      "looking_away_count": 4,
+      "on_task_ratio": 0.807,
+      "completion_rate": 49.64
+    },
+    {
+      "student_id": "ST001",
+      "session_number": 3,
+      "gesture_accuracy": 59.81,
+      "attention_score": 71.16,
+      "response_time": 6.59,
+      "mistake_count": 1,
+      "attempt_count": 3,
+      "looking_away_count": 4,
+      "on_task_ratio": 0.682,
+      "completion_rate": 48.48
+    },
+    {
+      "student_id": "ST001",
+      "session_number": 4,
+      "gesture_accuracy": 63.56,
+      "attention_score": 66.87,
+      "response_time": 5.51,
+      "mistake_count": 1,
+      "attempt_count": 3,
+      "looking_away_count": 4,
+      "on_task_ratio": 0.637,
+      "completion_rate": 65.81
+    },
+    {
+      "student_id": "ST001",
+      "session_number": 5,
+      "gesture_accuracy": 74.29,
+      "attention_score": 69.26,
+      "response_time": 4.68,
+      "mistake_count": 0,
+      "attempt_count": 1,
+      "looking_away_count": 3,
+      "on_task_ratio": 0.627,
+      "completion_rate": 50.62
+    },
+    {
+      "student_id": "ST002",
+      "session_number": 1,
+      "gesture_accuracy": 74.03,
+      "attention_score": 78.47,
+      "response_time": 4.9,
+      "mistake_count": 0,
+      "attempt_count": 2,
+      "looking_away_count": 3,
+      "on_task_ratio": 0.692,
+      "completion_rate": 63.85
+    },
+    {
+      "student_id": "ST002",
+      "session_number": 2,
+      "gesture_accuracy": 75.9,
+      "attention_score": 92.96,
+      "response_time": 6.89,
+      "mistake_count": 0,
+      "attempt_count": 1,
+      "looking_away_count": 1,
+      "on_task_ratio": 0.938,
+      "completion_rate": 56.48
+    },
+    {
+      "student_id": "ST002",
+      "session_number": 3,
+      "gesture_accuracy": 77.17,
+      "attention_score": 63.84,
+      "response_time": 6.56,
+      "mistake_count": 0,
+      "attempt_count": 1,
+      "looking_away_count": 1,
+      "on_task_ratio": 0.62,
+      "completion_rate": 61.74
+    },
+    {
+      "student_id": "ST002",
+      "session_number": 4,
+      "gesture_accuracy": 79.78,
+      "attention_score": 71.18,
+      "response_time": 4.37,
+      "mistake_count": 0,
+      "attempt_count": 2,
+      "looking_away_count": 3,
+      "on_task_ratio": 0.657,
+      "completion_rate": 58.23
+    },
+    {
+      "student_id": "ST002",
+      "session_number": 5,
+      "gesture_accuracy": 86.39,
+      "attention_score": 80.12,
+      "response_time": 4.59,
+      "mistake_count": 0,
+      "attempt_count": 2,
+      "looking_away_count": 0,
+      "on_task_ratio": 0.808,
+      "completion_rate": 96.17
+    },
+    {
+      "student_id": "ST003",
+      "session_number": 1,
+      "gesture_accuracy": 37.73,
+      "attention_score": 71.08,
+      "response_time": 5.67,
+      "mistake_count": 2,
+      "attempt_count": 4,
+      "looking_away_count": 4,
+      "on_task_ratio": 0.662,
+      "completion_rate": 43.42
+    },
+    {
+      "student_id": "ST003",
+      "session_number": 2,
+      "gesture_accuracy": 48.18,
+      "attention_score": 50.55,
+      "response_time": 7.61,
+      "mistake_count": 1,
+      "attempt_count": 3,
+      "looking_away_count": 4,
+      "on_task_ratio": 0.609,
+      "completion_rate": 36.84
+    },
+    {
+      "student_id": "ST003",
+      "session_number": 3,
+      "gesture_accuracy": 40.44,
+      "attention_score": 48.44,
+      "response_time": 6.23,
+      "mistake_count": 1,
+      "attempt_count": 3,
+      "looking_away_count": 5,
+      "on_task_ratio": 0.527,
+      "completion_rate": 25.29
+    },
+    {
+      "student_id": "ST003",
+      "session_number": 4,
+      "gesture_accuracy": 41.54,
+      "attention_score": 54.3,
+      "response_time": 7.92,
+      "mistake_count": 2,
+      "attempt_count": 4,
+      "looking_away_count": 4,
+      "on_task_ratio": 0.483,
+      "completion_rate": 32.27
+    },
+    {
+      "student_id": "ST003",
+      "session_number": 5,
+      "gesture_accuracy": 46.9,
+      "attention_score": 60.51,
+      "response_time": 5.55,
+      "mistake_count": 2,
+      "attempt_count": 4,
+      "looking_away_count": 2,
+      "on_task_ratio": 0.733,
+      "completion_rate": 38.7
+    },
+    {
+      "student_id": "ST004",
+      "session_number": 1,
+      "gesture_accuracy": 61.51,
+      "attention_score": 100.0,
+      "response_time": 10.69,
+      "mistake_count": 1,
+      "attempt_count": 3,
+      "looking_away_count": 0,
+      "on_task_ratio": 1.0,
+      "completion_rate": 65.61
+    },
+    {
+      "student_id": "ST004",
+      "session_number": 2,
+      "gesture_accuracy": 71.61,
+      "attention_score": 91.98,
+      "response_time": 8.68,
+      "mistake_count": 0,
+      "attempt_count": 2,
+      "looking_away_count": 0,
+      "on_task_ratio": 0.961,
+      "completion_rate": 63.91
+    },
+    {
+      "student_id": "ST004",
+      "session_number": 3,
+      "gesture_accuracy": 67.37,
+      "attention_score": 76.78,
+      "response_time": 7.03,
+      "mistake_count": 1,
+      "attempt_count": 2,
+      "looking_away_count": 2,
+      "on_task_ratio": 0.833,
+      "completion_rate": 58.81
+    },
+    {
+      "student_id": "ST004",
+      "session_number": 4,
+      "gesture_accuracy": 70.5,
+      "attention_score": 92.29,
+      "response_time": 7.75,
+      "mistake_count": 1,
+      "attempt_count": 2,
+      "looking_away_count": 1,
+      "on_task_ratio": 0.778,
+      "completion_rate": 48.31
+    },
+    {
+      "student_id": "ST004",
+      "session_number": 5,
+      "gesture_accuracy": 80.02,
+      "attention_score": 87.07,
+      "response_time": 7.66,
+      "mistake_count": 0,
+      "attempt_count": 1,
+      "looking_away_count": 1,
+      "on_task_ratio": 0.792,
+      "completion_rate": 61.92
+    },
+    {
+      "student_id": "ST005",
+      "session_number": 1,
+      "gesture_accuracy": 43.24,
+      "attention_score": 100.0,
+      "response_time": 9.58,
+      "mistake_count": 1,
+      "attempt_count": 3,
+      "looking_away_count": 0,
+      "on_task_ratio": 0.992,
+      "completion_rate": 51.14
+    },
+    {
+      "student_id": "ST005",
+      "session_number": 2,
+      "gesture_accuracy": 54.12,
+      "attention_score": 95.01,
+      "response_time": 9.24,
+      "mistake_count": 1,
+      "attempt_count": 3,
+      "looking_away_count": 0,
+      "on_task_ratio": 0.799,
+      "completion_rate": 36.85
+    },
+    {
+      "student_id": "ST005",
+      "session_number": 3,
+      "gesture_accuracy": 52.77,
+      "attention_score": 100.0,
+      "response_time": 7.94,
+      "mistake_count": 1,
+      "attempt_count": 3,
+      "looking_away_count": 0,
+      "on_task_ratio": 0.954,
+      "completion_rate": 42.6
+    },
+    {
+      "student_id": "ST005",
+      "session_number": 4,
+      "gesture_accuracy": 56.85,
+      "attention_score": 92.86,
+      "response_time": 11.82,
+      "mistake_count": 1,
+      "attempt_count": 4,
+      "looking_away_count": 1,
+      "on_task_ratio": 0.953,
+      "completion_rate": 29.1
+    },
+    {
+      "student_id": "ST005",
+      "session_number": 5,
+      "gesture_accuracy": 56.1,
+      "attention_score": 100.0,
+      "response_time": 10.47,
+      "mistake_count": 1,
+      "attempt_count": 3,
+      "looking_away_count": 3,
+      "on_task_ratio": 1.0,
+      "completion_rate": 68.2
+    }
+  ]
+}

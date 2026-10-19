@@ -1,0 +1,29 @@
+{
+    "model_name": "Linear Regression",
+    "target": "next_session_accuracy",
+    "features": [
+        "gesture_accuracy",
+        "attention_score",
+        "response_time",
+        "mistake_rate",
+        "looking_away_count",
+        "on_task_ratio",
+        "completion_rate",
+        "attempt_count",
+        "accuracy_change",
+        "attention_change",
+        "response_time_change",
+        "accuracy_rolling_3",
+        "attention_rolling_3",
+        "response_time_rolling_3"
+    ],
+    "dataset_type": "Synthetic",
+    "total_model_ready_records": 9500,
+    "training_rows": 7600,
+    "testing_rows": 1900,
+    "training_students": 400,
+    "testing_students": 100,
+    "student_overlap": 0,
+    "selection_basis": "Lowest RMSE on the current held-out test split",
+    "real_world_validation": "Not yet performed"
+}

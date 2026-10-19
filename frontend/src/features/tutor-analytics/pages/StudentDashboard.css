@@ -54,6 +54,17 @@
   margin-top: 18px;
 }
 
+.student-dashboard-demo-note {
+  width: fit-content;
+  max-width: 100%;
+  margin: 8px 0 0 auto;
+  color: #64748b;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 10px;
+  line-height: 1.4;
+  text-align: right;
+}
+
 .student-summary-card {
   display: flex;
   box-sizing: border-box;
@@ -231,7 +242,7 @@
 .learning-progress-plot {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 170px;
   margin-top: 4px;
 }
 
@@ -311,10 +322,33 @@
   }
 }
 
+@media (min-width: 1201px) {
+  .learning-progress-card {
+    width: calc(50% - 8px);
+  }
+
+  .learning-progress-header {
+    gap: 8px 12px;
+  }
+
+  .learning-progress-heading h2 {
+    font-size: 15px;
+  }
+
+  .learning-progress-legend {
+    gap: 4px 8px;
+  }
+
+  .learning-progress-legend-item,
+  .learning-progress-y-axis,
+  .learning-progress-x-axis {
+    font-size: 10px;
+  }
+}
 @media (max-width: 720px) {
   .learning-progress-card {
     height: auto;
-    min-height: 260px;
+    min-height: 310px;
     padding: 12px 12px 8px;
   }
 
@@ -329,7 +363,7 @@
   }
 
   .learning-progress-plot {
-    height: 195px;
+    height: 160px;
     margin-top: 6px;
   }
 
@@ -849,6 +883,14 @@
   min-height: 33px;
 }
 
+.recent-lesson-attempts {
+  margin: 5px 0 0;
+  color: #748196;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 9px;
+  line-height: 1.25;
+}
+
 .recent-lesson-meta {
   display: flex;
   align-items: center;
@@ -1110,5 +1152,75 @@
 @media (prefers-reduced-motion: reduce) {
   .student-dashboard-button {
     transition: none;
+  }
+}
+
+.learning-progress-prediction {
+  display: flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 2px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: #f3f8ff;
+}
+
+.learning-progress-prediction-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.learning-progress-prediction-copy strong {
+  color: #102f67;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.learning-progress-prediction-copy span {
+  overflow: hidden;
+  color: #64748b;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.learning-progress-prediction-value {
+  flex: 0 0 auto;
+  color: #102f67;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.student-dashboard-api-state {
+  display: grid;
+  min-height: calc(100vh - 66px);
+  place-items: center;
+  padding: 24px;
+  color: #102f67;
+  font-family: "Noto Sans Sinhala", sans-serif;
+  text-align: center;
+}
+
+.student-dashboard-api-state button {
+  margin-top: 8px;
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #3478ff;
+  color: #ffffff;
+  font: inherit;
+  cursor: pointer;
+}
+
+@media (max-width: 720px) {
+  .learning-progress-card {
+    min-height: 310px;
   }
 }

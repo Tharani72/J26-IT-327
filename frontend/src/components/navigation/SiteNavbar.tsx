@@ -1,4 +1,4 @@
-﻿import { useState } from "react"
+import { useState } from "react"
 import logo from "../../Images/Logo.png"
 import { homeTranslations } from "../../features/home/homeTranslations"
 import { useHomeLanguage } from "../../i18n/HomeLanguage"
@@ -14,9 +14,20 @@ const navigationText = {
 
 type SiteNavbarProps = {
   studentProfile?: boolean
+  teacherProfile?: boolean
+  studentDisplayName?: string
+  studentGrade?: string
+  onStudentLogout?: () => void
 }
 
-export default function SiteNavbar({ studentProfile = false }: SiteNavbarProps) {
+export default function SiteNavbar({
+  studentProfile = false,
+  teacherProfile = false,
+  studentDisplayName,
+  studentGrade,
+  onStudentLogout,
+}: SiteNavbarProps) {
+  const isProfileNavbar = studentProfile || teacherProfile
   const [isStudentMenuOpen, setStudentMenuOpen] = useState(false)
   const [isHomeMenuOpen, setHomeMenuOpen] = useState(false)
   const { language, setLanguage } = useHomeLanguage()
@@ -32,19 +43,19 @@ export default function SiteNavbar({ studentProfile = false }: SiteNavbarProps) 
   ]
 
   return (
-    <header lang={studentProfile ? "si-LK" : language === "si" ? "si-LK" : "en"} className={studentProfile ? "site-nav site-nav--student" : "site-nav site-nav--home"}>
-      {studentProfile ? (
+    <header lang={isProfileNavbar ? "si-LK" : language === "si" ? "si-LK" : "en"} className={isProfileNavbar ? "site-nav site-nav--student" : "site-nav site-nav--home"}>
+      {isProfileNavbar ? (
         <>
           <div className="site-brand">
             <img className="site-logo" src={logo} alt="OmniSign SL logo" />
             <div className="site-brand-copy">
-              <span className="site-name">OminiSign SL</span>
+              <span className="site-name">{teacherProfile ? "OmniSign SL" : "OminiSign SL"}</span>
               <span className="site-tagline">{navigationText.tagline}</span>
             </div>
           </div>
 
           <div className="student-nav-controls">
-            <button className="notification-bell-button" type="button" aria-label="Notifications">
+            <button className="notification-bell-button" type="button" aria-label={teacherProfile ? "දැනුම්දීම්" : "Notifications"}>
               <svg className="notification-bell-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
                 <path d="M10 21h4" />
@@ -62,22 +73,35 @@ export default function SiteNavbar({ studentProfile = false }: SiteNavbarProps) 
                 aria-controls="student-profile-menu"
                 onClick={() => setStudentMenuOpen((open) => !open)}
               >
-                <span className="student-profile-avatar" role="img" aria-label="Student avatar">
-                  <svg className="student-avatar-art" viewBox="0 0 48 48" aria-hidden="true">
-                    <circle cx="24" cy="24" r="23" fill="#e7f4ff" />
-                    <path d="M7 47c1-9 7-14 17-14s16 5 17 14H7z" fill="#2452a4" />
-                    <path d="M11 22c-2-11 4-18 13-18s15 7 13 19l-3 9H14z" fill="#3b2a25" />
-                    <circle cx="12.5" cy="23" r="3" fill="#f3bd9c" />
-                    <circle cx="35.5" cy="23" r="3" fill="#f3bd9c" />
-                    <path d="M13 19c0-8 4-12 11-12s11 4 11 12v7c0 7-5 12-11 12s-11-5-11-12z" fill="#f6c7a6" />
-                    <path d="M12 20C11 10 17 4 24 4c8 0 13 6 12 16-3-1-6-4-8-8-3 4-9 7-16 8z" fill="#3b2a25" />
-                    <path d="M18 23h.1M30 23h.1" stroke="#382923" stroke-width="2.8" stroke-linecap="round" />
-                    <path d="M21 30c2 2 4 2 6 0" fill="none" stroke="#b85450" stroke-width="1.7" stroke-linecap="round" />
-                  </svg>
+                <span className="student-profile-avatar" role="img" aria-label={teacherProfile ? "ගුරු පැතිකඩ රූපය" : "Student avatar"}>
+                  {teacherProfile ? (
+                    <svg className="student-avatar-art" viewBox="0 0 48 48" aria-hidden="true">
+                      <circle cx="24" cy="24" r="23" fill="#e7f4ff" />
+                      <path d="M5 48c1-10 8-15 19-15s18 5 19 15H5z" fill="#2452a4" />
+                      <path d="M14 34 24 44 34 34l5 14H9z" fill="#ffffff" />
+                      <path d="M12 20c-1-10 4-16 12-16s13 6 12 16l-2 10H14z" fill="#342b29" />
+                      <path d="M15 19c0-7 3-11 9-11s9 4 9 11v8c0 7-4 11-9 11s-9-4-9-11z" fill="#f2bd9b" />
+                      <path d="M13 19c0-10 5-15 12-15 8 0 12 6 11 15-4-1-7-4-9-8-3 4-7 7-14 8z" fill="#342b29" />
+                      <path d="M19 25h.1M29 25h.1" stroke="#382923" strokeWidth="2.4" strokeLinecap="round" />
+                      <path d="M21 32c2 2 4 2 6 0" fill="none" stroke="#a64c4c" strokeWidth="1.6" strokeLinecap="round" />
+                    </svg>
+                  ) : (
+                    <svg className="student-avatar-art" viewBox="0 0 48 48" aria-hidden="true">
+                      <circle cx="24" cy="24" r="23" fill="#e7f4ff" />
+                      <path d="M7 47c1-9 7-14 17-14s16 5 17 14H7z" fill="#2452a4" />
+                      <path d="M11 22c-2-11 4-18 13-18s15 7 13 19l-3 9H14z" fill="#3b2a25" />
+                      <circle cx="12.5" cy="23" r="3" fill="#f3bd9c" />
+                      <circle cx="35.5" cy="23" r="3" fill="#f3bd9c" />
+                      <path d="M13 19c0-8 4-12 11-12s11 4 11 12v7c0 7-5 12-11 12s-11-5-11-12z" fill="#f6c7a6" />
+                      <path d="M12 20C11 10 17 4 24 4c8 0 13 6 12 16-3-1-6-4-8-8-3 4-9 7-16 8z" fill="#3b2a25" />
+                      <path d="M18 23h.1M30 23h.1" stroke="#382923" strokeWidth="2.8" strokeLinecap="round" />
+                      <path d="M21 30c2 2 4 2 6 0" fill="none" stroke="#b85450" strokeWidth="1.7" strokeLinecap="round" />
+                    </svg>
+                  )}
                 </span>
                 <span className="student-profile-details">
-                  <span className="student-profile-name">{navigationText.studentName}</span>
-                  <span className="student-profile-grade">{navigationText.grade}</span>
+                  <span className="student-profile-name">{teacherProfile ? "ගුරුවරයා" : studentDisplayName ?? navigationText.studentName}</span>
+                  <span className="student-profile-grade">{teacherProfile ? "ගුරු ගිණුම" : studentGrade ?? navigationText.grade}</span>
                 </span>
                 <svg className="student-chevron-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="m6 9 6 6 6-6" />
@@ -86,9 +110,18 @@ export default function SiteNavbar({ studentProfile = false }: SiteNavbarProps) 
 
               {isStudentMenuOpen && (
                 <div className="student-profile-menu" id="student-profile-menu" role="menu">
-                  <button type="button" role="menuitem" onClick={() => setStudentMenuOpen(false)}>{navigationText.profile}</button>
-                  <button type="button" role="menuitem" onClick={() => setStudentMenuOpen(false)}>{navigationText.settings}</button>
-                  <button type="button" role="menuitem" onClick={() => setStudentMenuOpen(false)}>{navigationText.logout}</button>
+                  <button type="button" role="menuitem" onClick={() => setStudentMenuOpen(false)}>{teacherProfile ? "ගුරු පැතිකඩ" : navigationText.profile}</button>
+                  <button type="button" role="menuitem" onClick={() => setStudentMenuOpen(false)}>{teacherProfile ? "සැකසුම්" : navigationText.settings}</button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setStudentMenuOpen(false)
+                      if (!teacherProfile) onStudentLogout?.()
+                    }}
+                  >
+                    {teacherProfile ? "ඉවත් වන්න" : navigationText.logout}
+                  </button>
                 </div>
               )}
             </div>

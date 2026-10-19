@@ -1,4 +1,13 @@
+import { useEffect, useState } from "react"
 import SiteNavbar from "../../../components/navigation/SiteNavbar"
+import { fetchStudentDashboard, type StudentDashboardResponse } from "../studentAnalyticsApi"
+import { signOutDemoStudent } from "../../../services/authService"
+import {
+  getDemoStudentById,
+  type StudentDemoProfile,
+  type StudentLearningSession,
+  type StudentRecommendation,
+} from "../studentDemoData"
 import studentDashboardImage from "./Images/StudentDashboard.png"
 import "./StudentDashboard.css"
 
@@ -33,11 +42,11 @@ type SummaryCard = {
   icon: SummaryCardIconName
 }
 
-const summaryCards: SummaryCard[] = [
-  { id: "accuracy", title: "නිවැරදි බව", subtitle: "Accuracy", value: "89%", progress: 89, color: "#20C96B", icon: "target" },
-  { id: "attention", title: "අවධානය", subtitle: "Accuracy", value: "77%", progress: 77, color: "#397BFF", icon: "eye" },
-  { id: "completed-lessons", title: "සම්පූර්ණ කළ පාඩම්", subtitle: "Completed Lessons", value: "8/10", progress: 80, color: "#FFB800", icon: "book" },
-  { id: "overall-progress", title: "සමස්ත ප්‍රගතිය", subtitle: "Overall Progress", value: "82%", progress: 82, color: "#A64DFF", icon: "chart" },
+const summaryCardDefinitions: Omit<SummaryCard, "value" | "progress">[] = [
+  { id: "accuracy", title: "නිවැරදි බව", subtitle: "Accuracy", color: "#20C96B", icon: "target" },
+  { id: "attention", title: "අවධානය", subtitle: "Accuracy", color: "#397BFF", icon: "eye" },
+  { id: "completed-lessons", title: "සම්පූර්ණ කළ පාඩම්", subtitle: "Completed Lessons", color: "#FFB800", icon: "book" },
+  { id: "overall-progress", title: "සමස්ත ප්‍රගතිය", subtitle: "Overall Progress", color: "#A64DFF", icon: "chart" },
 ]
 
 function SummaryCardIcon({ icon }: { icon: SummaryCardIconName }) {
@@ -90,15 +99,7 @@ type LearningProgressDatum = {
   proficiency: number
 }
 
-const learningProgressData: LearningProgressDatum[] = [
-  { week: "\u0dc3\u0dad\u0dd2\u0020\u0031", accuracy: 40, attention: 28, proficiency: 18 },
-  { week: "\u0dc3\u0dad\u0dd2\u0020\u0032", accuracy: 60, attention: 48, proficiency: 35 },
-  { week: "\u0dc3\u0dad\u0dd2\u0020\u0033", accuracy: 75, attention: 60, proficiency: 44 },
-  { week: "\u0dc3\u0dad\u0dd2\u0020\u0034", accuracy: 80, attention: 64, proficiency: 45 },
-  { week: "\u0dc3\u0dad\u0dd2\u0020\u0035", accuracy: 89, attention: 72, proficiency: 54 },
-  { week: "\u0dc3\u0dad\u0dd2\u0020\u0036", accuracy: 91, attention: 73, proficiency: 54 },
-  { week: "\u0dc3\u0dad\u0dd2\u0020\u0037", accuracy: 100, attention: 82, proficiency: 63 },
-]
+type StudentPrediction = StudentDashboardResponse["prediction"]
 
 const learningProgressSeries: { key: LearningProgressKey; label: string; color: string }[] = [
   { key: "accuracy", label: "\u0db1\u0dd2\u0dc0\u0dd0\u0dbb\u0daf\u0dd2\u0020\u0db6\u0dc0", color: "#10C98A" },
@@ -110,18 +111,18 @@ function chartY(value: number) {
   return 172 - (value / 100) * 164
 }
 
-function chartX(index: number) {
-  return ((index + 0.5) * 700) / learningProgressData.length
+function chartX(index: number, count: number) {
+  return ((index + 0.5) * 700) / count
 }
 
-function weeklyChartPath(key: LearningProgressKey) {
-  return learningProgressData.map((datum, index) => {
+function weeklyChartPath(key: LearningProgressKey, data: LearningProgressDatum[]) {
+  return data.map((datum, index) => {
     const command = index === 0 ? "M" : "L"
-    return command + " " + chartX(index) + " " + chartY(datum[key])
+    return command + " " + chartX(index, data.length) + " " + chartY(datum[key])
   }).join(" ")
 }
 
-function LearningProgressChart() {
+function LearningProgressChart({ data, prediction }: { data: LearningProgressDatum[]; prediction: StudentPrediction }) {
   const axisValues = [100, 80, 60, 40, 20, 0]
 
   return (
@@ -144,7 +145,7 @@ function LearningProgressChart() {
         </div>
       </header>
 
-      <div className="learning-progress-plot" role="group" aria-label="Learning progress percentages across seven weeks">
+      <div className="learning-progress-plot" role="group" aria-label={"Learning progress across " + data.length + " sessions"}>
         <div className="learning-progress-y-axis" aria-hidden="true">
           {axisValues.map((value) => <span key={value}>{value}%</span>)}
         </div>
@@ -163,7 +164,7 @@ function LearningProgressChart() {
             {learningProgressSeries.map((series) => (
               <path
                 key={series.key}
-                d={weeklyChartPath(series.key)}
+                d={weeklyChartPath(series.key, data)}
                 fill="none"
                 stroke={series.color}
                 strokeWidth="3"
@@ -174,13 +175,13 @@ function LearningProgressChart() {
           </svg>
           <div className="learning-progress-markers" aria-hidden="true">
             {learningProgressSeries.flatMap((series) =>
-              learningProgressData.map((datum, index) => (
+              data.map((datum, index) => (
                 <span
                   key={series.key + "-" + index}
                   className="learning-progress-marker"
                   style={{
                     borderColor: series.color,
-                    left: ((index + 0.5) / learningProgressData.length) * 100 + "%",
+                    left: ((index + 0.5) / data.length) * 100 + "%",
                     top: (chartY(datum[series.key]) / 180) * 100 + "%",
                   }}
                 />
@@ -188,9 +189,16 @@ function LearningProgressChart() {
             )}
           </div>
         </div>
-        <div className="learning-progress-x-axis" aria-hidden="true">
-          {learningProgressData.map((datum) => <span key={datum.week}>{datum.week}</span>)}
+        <div className="learning-progress-x-axis" aria-hidden="true" style={{ gridTemplateColumns: "repeat(" + data.length + ", minmax(0, 1fr))" }}>
+          {data.map((datum) => <span key={datum.week}>{datum.week}</span>)}
         </div>
+      </div>
+      <div className="learning-progress-prediction" role="note">
+        <div className="learning-progress-prediction-copy">
+          <strong>ඊළඟ සැසියේ අපේක්ෂිත නිවැරදිභාවය</strong>
+          <span>{prediction.modelName} · {new Intl.DateTimeFormat("si-LK", { dateStyle: "short", timeStyle: "short" }).format(new Date(prediction.generatedAt))}</span>
+        </div>
+        <strong className="learning-progress-prediction-value">{prediction.value.toFixed(1)}%</strong>
       </div>
     </section>
   )
@@ -206,11 +214,11 @@ type EyeGazeMetric = {
   tone: EyeGazeMetricTone
 }
 
-const eyeGazeMetrics: EyeGazeMetric[] = [
-  { label: "කාර්යයේ නිරත වීම", value: "82%", icon: "target", tone: "green" },
-  { label: "වෙනතකට බැලීම්", value: "3 වාර", icon: "eye-off", tone: "pink" },
-  { label: "බැලීමේ කාලය", value: "4.8 තත්පර", icon: "clock", tone: "blue" },
-  { label: "ප්‍රතිචාර කාලය", value: "2.3 තත්පර", icon: "zap", tone: "blue" },
+const eyeGazeMetricDefinitions: Omit<EyeGazeMetric, "value">[] = [
+  { label: "කාර්යයේ නිරත වීම", icon: "target", tone: "green" },
+  { label: "වෙනතකට බැලීම්", icon: "eye-off", tone: "pink" },
+  { label: "බැලීමේ කාලය", icon: "clock", tone: "blue" },
+  { label: "ප්‍රතිචාර කාලය", icon: "zap", tone: "blue" },
 ]
 
 function EyeGazeIcon({ name }: { name: EyeGazeIconName }) {
@@ -264,8 +272,27 @@ function EyeGazeIcon({ name }: { name: EyeGazeIconName }) {
   )
 }
 
-function EyeGazeAnalytics() {
+type EyeGazeDashboardMetrics = {
+  attentionScore: number
+  onTaskRatio: number
+  lookingAwayCount: number
+  gazeDurationSeconds: number | null
+  responseTimeSeconds: number
+}
+
+function EyeGazeAnalytics({ metrics }: { metrics: EyeGazeDashboardMetrics }) {
   const circumference = 2 * Math.PI * 48
+  const attentionProgress = Math.round(metrics.attentionScore)
+  const metricValues = [
+    Math.round(metrics.onTaskRatio) + "%",
+    Math.round(metrics.lookingAwayCount) + " \u0dc0\u0dcf\u0dbb",
+    (metrics.gazeDurationSeconds === null ? "—" : metrics.gazeDurationSeconds.toFixed(1)) + " තත්පර",
+    metrics.responseTimeSeconds.toFixed(1) + " තත්පර",
+  ]
+  const eyeGazeMetrics = eyeGazeMetricDefinitions.map((metric, index) => ({
+    ...metric,
+    value: metricValues[index],
+  }))
 
   return (
     <section className="eye-gaze-analytics" aria-labelledby="eye-gaze-title">
@@ -293,7 +320,7 @@ function EyeGazeAnalytics() {
             aria-label="Eye gaze attention"
             aria-valuemin={0}
             aria-valuemax={100}
-            aria-valuenow={77}
+            aria-valuenow={attentionProgress}
           >
             <svg viewBox="0 0 120 120" aria-hidden="true">
               <circle className="eye-gaze-ring-track" cx="60" cy="60" r="48" />
@@ -303,18 +330,18 @@ function EyeGazeAnalytics() {
                 cy="60"
                 r="48"
                 strokeDasharray={circumference}
-                strokeDashoffset={circumference * 0.23}
+                strokeDashoffset={circumference * (1 - attentionProgress / 100)}
                 transform="rotate(-90 60 60)"
               />
             </svg>
             <div className="eye-gaze-ring-copy">
-              <strong>77%</strong>
+              <strong>{attentionProgress}%</strong>
               <span>අවධානය</span>
             </div>
           </div>
           <span className="eye-gaze-status">
             <EyeGazeIcon name="smile" />
-            <span>හොඳ අවධානයක්</span>
+            <span>{attentionProgress >= 70 ? "හොඳ අවධානයක්" : "අවධානය වැඩිදියුණු කරමු"}</span>
           </span>
         </div>
 
@@ -345,14 +372,9 @@ type RecentLesson = {
   completedAt: string
   completion: string
   artwork: LessonArtworkKind
+  attemptCount: number
+  mistakeRate: number
 }
-
-const recentLessons: RecentLesson[] = [
-  { id: "sign-letters-1", title: "සංඥා අකුරු - 1", completedAt: "2026-10-05", completion: "92%", artwork: "single-hand" },
-  { id: "sign-letters-2", title: "සංඥා අකුරු - 2", completedAt: "2026-10-03", completion: "85%", artwork: "paired-hands" },
-  { id: "animals-1", title: "සතුන් - 1", completedAt: "2026-09-28", completion: "78%", artwork: "dog" },
-  { id: "fruits-1", title: "පලතුරු - 1", completedAt: "2026-09-25", completion: "88%", artwork: "apple" },
-]
 
 function ActivitySectionIcon({ name }: { name: ActivitySectionIconName }) {
   return (
@@ -434,7 +456,7 @@ function LessonIllustration({ kind }: { kind: LessonArtworkKind }) {
   )
 }
 
-function RecentLearningActivity() {
+function RecentLearningActivity({ lessons }: { lessons: RecentLesson[] }) {
   return (
     <section className="recent-learning-section" aria-labelledby="recent-learning-title">
       <header className="bottom-section-header">
@@ -449,7 +471,7 @@ function RecentLearningActivity() {
       </header>
 
       <div className="recent-lesson-grid">
-        {recentLessons.map((lesson) => (
+        {lessons.map((lesson) => (
           <article className="recent-lesson-card" key={lesson.id}>
             <div className={`recent-lesson-artwork recent-lesson-artwork--${lesson.artwork}`}>
               <LessonIllustration kind={lesson.artwork} />
@@ -460,6 +482,9 @@ function RecentLearningActivity() {
                 <time dateTime={lesson.completedAt}>{lesson.completedAt}</time>
                 <span className="recent-lesson-completion">{lesson.completion}</span>
               </div>
+              <p className="recent-lesson-attempts">
+                {lesson.attemptCount} {"\u0d89\u0dad\u0dca\u0dc3\u0dcf\u0dc4"} · {lesson.mistakeRate}% {"\u0daf\u0ddd\u0dc2"}
+              </p>
             </div>
           </article>
         ))}
@@ -468,7 +493,7 @@ function RecentLearningActivity() {
   )
 }
 
-function RecommendedLearningActivity() {
+function RecommendedLearningActivity({ recommendation }: { recommendation: StudentRecommendation }) {
   return (
     <aside className="recommended-lesson-section" aria-labelledby="recommended-lesson-title">
       <header className="recommended-lesson-header">
@@ -481,8 +506,8 @@ function RecommendedLearningActivity() {
           <LessonIllustration kind="paired-hands" />
         </div>
         <div className="recommended-lesson-copy">
-          <h3>සංඥා අකුරු - 2</h3>
-          <p>ඔබගේ ඉදිරිපත් කිරීම අනුව සකස් කළ පාඩමකි.</p>
+          <h3>{recommendation.title}</h3>
+          <p>{recommendation.description}</p>
         </div>
       </div>
 
@@ -567,10 +592,187 @@ function SidebarIcon({ name }: { name: SidebarIconName }) {
   }
 }
 
-export default function StudentDashboard() {
+
+function average(values: number[]) {
+  return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0
+}
+
+function mergeApiDashboard(
+  localStudent: StudentDemoProfile,
+  dashboard: StudentDashboardResponse,
+): StudentDemoProfile {
+  const sessions: StudentLearningSession[] = dashboard.sessions.map((record) => {
+    const localSession = localStudent.sessions.find((item) =>
+      item.id.endsWith("-session-" + record.session_number),
+    )
+    if (!localSession) {
+      throw new Error("Dashboard enrichment is missing a local demo lesson.")
+    }
+    return {
+      ...localSession,
+      id: record.id,
+      date: record.recorded_at ? record.recorded_at.slice(0, 10) : localSession.date,
+      completed: record.completion_rate >= 100,
+      completionRate: record.completion_rate,
+      gestureAccuracy: record.gesture_accuracy,
+      learningProgress: record.completion_rate,
+      attentionScore: record.attention_score,
+      responseTimeSeconds: record.response_time,
+      gazeDurationSeconds: null,
+      lookingAwayCount: record.looking_away_count,
+      onTaskRatio: record.on_task_ratio * 100,
+      attemptCount: record.attempt_count,
+      mistakeRate: record.mistake_rate * 100,
+      accuracyChange: record.accuracy_change,
+      attentionChange: record.attention_change,
+      responseTimeChange: record.response_time_change,
+      accuracyRolling3: record.accuracy_rolling_3,
+      attentionRolling3: record.attention_rolling_3,
+      responseTimeRolling3: record.response_time_rolling_3,
+    }
+  })
+
+  return {
+    ...localStudent,
+    studentId: dashboard.student.studentCode,
+    email: dashboard.student.email ?? localStudent.email,
+    displayName: dashboard.student.fullName,
+    grade: dashboard.student.grade ?? localStudent.grade,
+    sessions,
+  }
+}
+
+function buildStudentSummaryCards(student: StudentDemoProfile): SummaryCard[] {
+  const sessions = student.sessions
+  const completedCount = sessions.filter((session) => session.completed).length
+  const averageAccuracy = average(sessions.map((session) => session.gestureAccuracy))
+  const averageAttention = average(sessions.map((session) => session.attentionScore))
+  const averageProgress = average(sessions.map((session) => session.learningProgress))
+
+  return summaryCardDefinitions.map((card) => {
+    if (card.id === "accuracy") {
+      return { ...card, value: Math.round(averageAccuracy) + "%", progress: Math.round(averageAccuracy) }
+    }
+    if (card.id === "attention") {
+      return { ...card, value: Math.round(averageAttention) + "%", progress: Math.round(averageAttention) }
+    }
+    if (card.id === "completed-lessons") {
+      const progress = sessions.length ? Math.round((completedCount / sessions.length) * 100) : 0
+      return { ...card, value: completedCount + "/" + sessions.length, progress }
+    }
+    return { ...card, value: Math.round(averageProgress) + "%", progress: Math.round(averageProgress) }
+  })
+}
+
+function buildLearningProgressData(student: StudentDemoProfile): LearningProgressDatum[] {
+  return student.sessions.map((session, index) => ({
+    week: "සති " + (index + 1),
+    accuracy: session.gestureAccuracy,
+    attention: session.attentionScore,
+    proficiency: session.learningProgress,
+  }))
+}
+
+function buildEyeGazeMetrics(student: StudentDemoProfile): EyeGazeDashboardMetrics {
+  const sessions = student.sessions
+  const availableGazeDurations = sessions
+    .map((session) => session.gazeDurationSeconds)
+    .filter((value): value is number => value !== null && Number.isFinite(value))
+  return {
+    attentionScore: average(sessions.map((session) => session.attentionScore)),
+    onTaskRatio: average(sessions.map((session) => session.onTaskRatio)),
+    lookingAwayCount: average(sessions.map((session) => session.lookingAwayCount)),
+    gazeDurationSeconds: availableGazeDurations.length ? average(availableGazeDurations) : null,
+    responseTimeSeconds: average(sessions.map((session) => session.responseTimeSeconds)),
+  }
+}
+
+function buildRecentLessons(student: StudentDemoProfile): RecentLesson[] {
+  return student.sessions.slice(-4).reverse().map((session) => ({
+    id: session.id,
+    title: session.lessonTitle,
+    completedAt: session.date,
+    completion: session.completionRate + "%",
+    artwork: session.artwork,
+    attemptCount: session.attemptCount,
+    mistakeRate: session.mistakeRate,
+  }))
+}
+
+export default function StudentDashboard({ studentId }: { studentId: string }) {
+  const localStudent = getDemoStudentById(studentId)
+  const [dashboard, setDashboard] = useState<StudentDashboardResponse | null>(null)
+  const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading")
+  const [retryCount, setRetryCount] = useState(0)
+
+  useEffect(() => {
+    let active = true
+    setLoadState("loading")
+    fetchStudentDashboard()
+      .then((result) => {
+        if (!active) return
+        setDashboard(result)
+        setLoadState("ready")
+      })
+      .catch((error: unknown) => {
+        if (!active) return
+        const status = typeof error === "object" && error !== null && "status" in error
+          ? Number(error.status)
+          : undefined
+        if (status === 401) {
+          window.location.replace("/login")
+          return
+        }
+        setLoadState("error")
+      })
+    return () => {
+      active = false
+    }
+  }, [studentId, retryCount])
+
+  function handleLogout() {
+    void signOutDemoStudent().finally(() => window.location.assign("/login"))
+  }
+
+  if (!localStudent) return null
+
+  if (loadState !== "ready" || !dashboard) {
+    return (
+      <>
+        <SiteNavbar
+          studentProfile
+          studentDisplayName={localStudent.displayName}
+          studentGrade={localStudent.grade}
+          onStudentLogout={handleLogout}
+        />
+        <main className="student-dashboard-api-state">
+          <div role={loadState === "error" ? "alert" : "status"}>
+            <p>{loadState === "error" ? "\u0daf\u0dad\u0dca\u0dad\u0020\u0dbd\u0db6\u0dcf\u0d9c\u0dd0\u0db1\u0dd3\u0db8\u0da7\u0020\u0db1\u0ddc\u0dc4\u0dd0\u0d9a\u0dd2\u0020\u0dc0\u0dd2\u0dba\u002e" : "\u0daf\u0dad\u0dca\u0dad\u0020\u0dbd\u0db6\u0dcf\u0d9c\u0db1\u0dd2\u0db1\u0dca\u002e\u002e\u002e"}</p>
+            {loadState === "error" && (
+              <button type="button" onClick={() => setRetryCount((count) => count + 1)}>
+                {"\u0db1\u0dd0\u0dc0\u0dad\u0020\u0d8b\u0dad\u0dca\u0dc3\u0dcf\u0dc4\u0020\u0d9a\u0dbb\u0db1\u0dca\u0db1"}
+              </button>
+            )}
+          </div>
+        </main>
+      </>
+    )
+  }
+
+  const student = mergeApiDashboard(localStudent, dashboard)
+  const summaryCards = buildStudentSummaryCards(student)
+  const learningProgressData = buildLearningProgressData(student)
+  const eyeGazeMetrics = buildEyeGazeMetrics(student)
+  const recentLessons = buildRecentLessons(student)
+
   return (
     <>
-      <SiteNavbar studentProfile />
+      <SiteNavbar
+        studentProfile
+        studentDisplayName={student.displayName}
+        studentGrade={student.grade}
+        onStudentLogout={handleLogout}
+      />
       <div className="student-dashboard">
         <aside className="student-dashboard-sidebar" aria-label="Student dashboard sidebar">
           <nav className="student-dashboard-navigation" aria-label="Student dashboard">
@@ -599,6 +801,9 @@ export default function StudentDashboard() {
             src={studentDashboardImage}
             alt="OmniSign SL student dashboard illustration"
           />
+          <p className="student-dashboard-demo-note" role="note">
+            �,��T�, �_�-��S�- �s��~�-��S�??����'�, �+�_����S��? �_�-��S�- ��?��s.
+          </p>
           <section className="student-dashboard-summary-grid" aria-label="Student learning summary">
             {summaryCards.map((card) => (
               <article className="student-summary-card" key={card.id}>
@@ -634,12 +839,12 @@ export default function StudentDashboard() {
             ))}
           </section>
           <div className="student-dashboard-analytics-row">
-            <LearningProgressChart />
-            <EyeGazeAnalytics />
+            <LearningProgressChart data={learningProgressData} prediction={dashboard.prediction} />
+            <EyeGazeAnalytics metrics={eyeGazeMetrics} />
           </div>
           <div className="student-dashboard-bottom-row">
-            <RecentLearningActivity />
-            <RecommendedLearningActivity />
+            <RecentLearningActivity lessons={recentLessons} />
+            <RecommendedLearningActivity recommendation={student.recommendation} />
           </div>
         </main>
       </div>
