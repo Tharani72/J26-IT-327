@@ -1,6 +1,9 @@
 import SiteNavbar from "../../../components/navigation/SiteNavbar"
 import "./TeacherDashboard.css"
 import TeacherStudentList from "./TeacherStudentList"
+import teacherWelcomeIllustration from "../../../Images/teacher-smart-glove-classroom.png"
+import { getDemoStudentById, type StudentDemoProfile, type StudentLearningSession } from "../studentDemoData"
+import { signOutCurrentSession } from "../../../services/authService"
 
 type TeacherNavigationId = "dashboard" | "students" | "lessons" | "progress" | "attention" | "reports" | "settings"
 
@@ -20,6 +23,11 @@ type TeacherSummaryCard = {
   tone: TeacherSummaryTone
 }
 
+type TeacherDashboardStudent = {
+  profile: StudentDemoProfile
+  latest: StudentLearningSession
+}
+
 const teacherNavigationItems: TeacherNavigationItem[] = [
   { id: "dashboard", label: "ගුරු උපකරණ පුවරුව" },
   { id: "students", label: "මගේ සිසුන්" },
@@ -28,13 +36,6 @@ const teacherNavigationItems: TeacherNavigationItem[] = [
   { id: "attention", label: "අවධානය සහ සහභාගීත්වය" },
   { id: "reports", label: "වාර්තා" },
   { id: "settings", label: "සැකසුම්" },
-]
-
-const teacherSummaryCards: TeacherSummaryCard[] = [
-  { id: "students", title: "මුළු සිසුන්", value: "24", description: "අද සමඟ ඉගෙනුම ලබන සිසුන්", tone: "blue" },
-  { id: "lessons", title: "අද පාඩම් සම්පූර්ණ කළ", value: "18", description: "අද දිනයේ සම්පූර්ණ කළ පාඩම්", tone: "green" },
-  { id: "accuracy", title: "සාමාන්‍ය නිවැරදිභාවය", value: "86%", description: "සියලු සිසුන්ගේ සාමාන්‍ය අගය", tone: "blue" },
-  { id: "attention", title: "අවධානය අවශ්‍ය සිසුන්", value: "3", description: "දැනට අවධානය අවශ්‍ය සිසුන්", tone: "orange" },
 ]
 
 
@@ -80,11 +81,248 @@ function TeacherSummaryIcon({ name, className }: { name: TeacherSummaryId; class
   )
 }
 
+const demoStudentIds = ["ST001", "ST002", "ST003", "ST004", "ST005"]
+const supportAttentionThreshold = 70
+
+const teacherDashboardStudents: TeacherDashboardStudent[] = demoStudentIds.flatMap((studentId) => {
+  const profile = getDemoStudentById(studentId)
+  if (!profile) return []
+  const latest = profile.sessions[profile.sessions.length - 1]
+  return latest ? [{ profile, latest }] : []
+})
+
+function roundedAverage(values: number[]) {
+  return values.length ? Math.round(values.reduce((total, value) => total + value, 0) / values.length) : 0
+}
+
+const attentionStudents = teacherDashboardStudents.filter((student) => student.latest.attentionScore < supportAttentionThreshold)
+
+const teacherSummaryCards: TeacherSummaryCard[] = [
+  { id: "students", title: "ආදර්ශන සිසුන්", value: String(teacherDashboardStudents.length), description: "සංස්ලේෂිත සිසුන්ගේ ලැයිස්තුව", tone: "blue" },
+  { id: "accuracy", title: "සාමාන්‍ය සංඥා නිරවද්‍යතාව", value: roundedAverage(teacherDashboardStudents.map((student) => student.latest.gestureAccuracy)) + "%", description: "අවසන් වාර්තාගත සැසිය අනුව", tone: "green" },
+  { id: "lessons", title: "සාමාන්‍ය ඉගෙනුම් ප්‍රගතිය", value: roundedAverage(teacherDashboardStudents.map((student) => student.latest.learningProgress)) + "%", description: "අවසන් වාර්තාගත සැසිය අනුව", tone: "blue" },
+  { id: "attention", title: "අමතර සහාය අවශ්‍ය සිසුන්", value: String(attentionStudents.length), description: "අවධානය 70% ට අඩු ආදර්ශන වාර්තා", tone: "orange" },
+]
+
+const progressValuesByDate = new Map<string, number[]>()
+teacherDashboardStudents.forEach(({ profile }) => {
+  profile.sessions.forEach((session) => {
+    const values = progressValuesByDate.get(session.date) ?? []
+    values.push(session.learningProgress)
+    progressValuesByDate.set(session.date, values)
+  })
+})
+
+const teacherProgressTrend = Array.from(progressValuesByDate.entries())
+  .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
+  .map(([date, values]) => ({ date, value: roundedAverage(values) }))
+
+const recentLearningActivity = teacherDashboardStudents
+  .flatMap(({ profile }) => profile.sessions.map((session) => ({ profile, session })))
+  .sort((activityA, activityB) => activityB.session.date.localeCompare(activityA.session.date))
+  .slice(0, 5)
+
+function formatDemoDate(date: string) {
+  return new Intl.DateTimeFormat("si-LK", { day: "numeric", month: "short" }).format(new Date(date + "T00:00:00"))
+}
+
+function TeacherProgressChart() {
+  const plotLeft = 48
+  const plotRight = 610
+  const plotTop = 18
+  const plotBottom = 178
+  const plotHeight = plotBottom - plotTop
+  const points = teacherProgressTrend.map((item, index) => {
+    const x = teacherProgressTrend.length === 1
+      ? (plotLeft + plotRight) / 2
+      : plotLeft + (index / (teacherProgressTrend.length - 1)) * (plotRight - plotLeft)
+    return { ...item, x, y: plotTop + ((100 - item.value) / 100) * plotHeight }
+  })
+  const linePoints = points.map((point) => point.x + "," + point.y).join(" ")
+  const areaPath = points.length
+    ? "M " + points[0].x + " " + plotBottom + " L " + points.map((point) => point.x + " " + point.y).join(" L ") + " L " + points[points.length - 1].x + " " + plotBottom + " Z"
+    : ""
+
+  return (
+    <section className="teacher-dashboard-panel teacher-progress-panel" aria-labelledby="teacher-progress-title">
+      <header className="teacher-panel-heading">
+        <div>
+          <p className="teacher-panel-eyebrow">සංස්ලේෂිත ආදර්ශන දත්ත</p>
+          <h2 id="teacher-progress-title">ඉගෙනුම් ප්‍රගතිය</h2>
+          <p>සෑම සතියකම වාර්තා වූ සාමාන්‍ය ප්‍රගතිය</p>
+        </div>
+        <span className="teacher-panel-icon teacher-panel-icon--blue"><TeacherSummaryIcon name="lessons" /></span>
+      </header>
+      {points.length ? (
+        <>
+          <div className="teacher-progress-chart-wrap">
+            <svg className="teacher-progress-chart" viewBox="0 0 640 210" role="img" aria-label="සංස්ලේෂිත ආදර්ශන දත්ත මත සතිපතා ඉගෙනුම් ප්‍රගතිය">
+              <defs>
+                <linearGradient id="teacher-progress-fill" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stopColor="#3478ff" stopOpacity="0.2" />
+                  <stop offset="100%" stopColor="#3478ff" stopOpacity="0.01" />
+                </linearGradient>
+              </defs>
+              {[0, 25, 50, 75, 100].map((tick) => {
+                const y = plotTop + ((100 - tick) / 100) * plotHeight
+                return <g key={tick} className="teacher-progress-gridline">
+                  <line x1={plotLeft} x2={plotRight} y1={y} y2={y} />
+                  <text x="38" y={y + 4} textAnchor="end">{tick}%</text>
+                </g>
+              })}
+              <path d={areaPath} fill="url(#teacher-progress-fill)" />
+              <polyline points={linePoints} className="teacher-progress-line" />
+              {points.map((point) => <circle key={point.date} cx={point.x} cy={point.y} r="4.5" className="teacher-progress-point" />)}
+            </svg>
+          </div>
+          <div className="teacher-progress-date-axis" style={{ gridTemplateColumns: "repeat(" + points.length + ", minmax(0, 1fr))" }}>
+            {points.map((point) => <span key={point.date}>{formatDemoDate(point.date)}</span>)}
+          </div>
+        </>
+      ) : <p className="teacher-dashboard-empty">ප්‍රගති වාර්තා නොමැත.</p>}
+      <p className="teacher-data-footnote">මෙම ප්‍රස්ථාරය ආදර්ශන සිසුන්ගේ දත්ත පමණක් භාවිත කරයි.</p>
+    </section>
+  )
+}
+
+function TeacherAttentionPanel() {
+  return (
+    <section className="teacher-dashboard-panel teacher-attention-panel" aria-labelledby="teacher-attention-title">
+      <header className="teacher-panel-heading">
+        <div>
+          <p className="teacher-panel-eyebrow">අවසන් වාර්තාගත සැසිය</p>
+          <h2 id="teacher-attention-title">අමතර සහාය</h2>
+        </div>
+        <span className="teacher-panel-icon teacher-panel-icon--orange"><TeacherSummaryIcon name="attention" /></span>
+      </header>
+      <p className="teacher-panel-note">අවධානය 70% ට අඩු ආදර්ශන වාර්තා</p>
+      {attentionStudents.length ? (
+        <ul className="teacher-attention-list">
+          {attentionStudents.map(({ profile, latest }) => <li className="teacher-attention-item" key={profile.studentId}>
+            <span className="teacher-dashboard-avatar">{profile.displayName.slice(0, 1)}</span>
+            <span className="teacher-attention-copy"><strong>{profile.displayName}</strong><small>{profile.studentId} · {profile.grade}</small></span>
+            <strong className="teacher-attention-score">{Math.round(latest.attentionScore)}%</strong>
+          </li>)}
+        </ul>
+      ) : <p className="teacher-dashboard-empty">මෙම ආදර්ශන දත්තවල සහාය අවශ්‍ය වාර්තා නොමැත.</p>}
+    </section>
+  )
+}
+
+function TeacherRecentActivity() {
+  return (
+    <section className="teacher-dashboard-panel teacher-activity-panel" aria-labelledby="teacher-activity-title">
+      <header className="teacher-panel-heading">
+        <div>
+          <p className="teacher-panel-eyebrow">ආදර්ශන සැසි</p>
+          <h2 id="teacher-activity-title">මෑත ඉගෙනුම් ක්‍රියාකාරකම්</h2>
+        </div>
+        <span className="teacher-panel-icon teacher-panel-icon--green"><TeacherSummaryIcon name="lessons" /></span>
+      </header>
+      {recentLearningActivity.length ? (
+        <ul className="teacher-activity-list">
+          {recentLearningActivity.map(({ profile, session }) => <li className="teacher-activity-item" key={session.id}>
+            <span className="teacher-activity-marker" aria-hidden="true"><TeacherSummaryIcon name="accuracy" /></span>
+            <span className="teacher-activity-copy"><strong>{session.lessonTitle}</strong><small>{profile.displayName} · {profile.studentId}</small></span>
+            <time dateTime={session.date}>{formatDemoDate(session.date)}</time>
+          </li>)}
+        </ul>
+      ) : <p className="teacher-dashboard-empty">ඉගෙනුම් ක්‍රියාකාරකම් නොමැත.</p>}
+    </section>
+  )
+}
+
+function TeacherPerformanceTable() {
+  return (
+    <section className="teacher-dashboard-panel teacher-performance-panel" aria-labelledby="teacher-performance-title">
+      <header className="teacher-panel-heading teacher-performance-heading">
+        <div>
+          <p className="teacher-panel-eyebrow">සංස්ලේෂිත ආදර්ශන දත්ත</p>
+          <h2 id="teacher-performance-title">ශිෂ්‍ය කාර්යසාධනය</h2>
+          <p>එක් එක් සිසුවාගේ අවසන් වාර්තාගත සැසිය</p>
+        </div>
+        <span className="teacher-performance-count">{teacherDashboardStudents.length} ආදර්ශන සිසුන්</span>
+      </header>
+      {teacherDashboardStudents.length ? <div className="teacher-performance-table-wrap">
+        <table className="teacher-performance-table">
+          <thead><tr>
+            <th scope="col">ශිෂ්‍යයා</th>
+            <th scope="col">ශ්‍රේණිය</th>
+            <th scope="col">සංඥා නිරවද්‍යතාව</th>
+            <th scope="col">ඉගෙනුම් ප්‍රගතිය</th>
+            <th scope="col">අවධානය</th>
+            <th scope="col">අවසන් සැසිය</th>
+          </tr></thead>
+          <tbody>{teacherDashboardStudents.map(({ profile, latest }) => {
+            const needsSupport = latest.attentionScore < supportAttentionThreshold
+            return <tr key={profile.studentId}>
+              <td><span className="teacher-performance-student"><span className="teacher-dashboard-avatar">{profile.displayName.slice(0, 1)}</span><span><strong>{profile.displayName}</strong><small>{profile.studentId}</small></span></span></td>
+              <td>{profile.grade}</td>
+              <td><strong className="teacher-performance-value">{Math.round(latest.gestureAccuracy)}%</strong></td>
+              <td><span className="teacher-performance-progress"><span className="teacher-performance-track"><span style={{ width: Math.max(0, Math.min(100, latest.learningProgress)) + "%" }} /></span><strong>{Math.round(latest.learningProgress)}%</strong></span></td>
+              <td><span className={needsSupport ? "teacher-performance-status is-support" : "teacher-performance-status is-good"}>{needsSupport ? "අමතර සහාය" : "හොඳයි"}</span></td>
+              <td><time dateTime={latest.date}>{formatDemoDate(latest.date)}</time></td>
+            </tr>
+          })}</tbody>
+        </table>
+      </div> : <p className="teacher-dashboard-empty">ශිෂ්‍ය කාර්යසාධන වාර්තා නොමැත.</p>}
+      <p className="teacher-data-footnote">මෙය සජීවී ගුරු වාර්තාවක් නොවේ. ඉගැන්වීම් භාවිතයට පෙර සැබෑ ගුරු-පන්ති API එකක් අවශ්‍ය වේ.</p>
+    </section>
+  )
+}
+
+function TeacherDashboardHome() {
+  return (
+    <div className="teacher-dashboard-main">
+      <section className="teacher-dashboard-banner" aria-labelledby="teacher-dashboard-title">
+        <div className="teacher-welcome-copy">
+          <span className="teacher-welcome-eyebrow">OMNISIGN SL · ගුරු පුවරුව</span>
+          <h1 id="teacher-dashboard-title">ආයුබෝවන්, ගුරුතුමනි</h1>
+          <p>සිසුන්ගේ ඉගෙනුම් ප්‍රගතිය සහ පන්ති කටයුතු එකම තැනකින් බලන්න.</p>
+          <span className="teacher-synthetic-badge"><span aria-hidden="true" />සංස්ලේෂිත ආදර්ශන දත්ත · සජීවී ගුරු වාර්තා නොවේ</span>
+        </div>
+        <div className="teacher-welcome-art">
+          <img src={teacherWelcomeIllustration} alt="Primary-school children practising sign language with smart gloves while their teacher guides them." />
+        </div>
+      </section>
+
+      <section className="teacher-summary-grid" aria-label="සංස්ලේෂිත ගුරු පුවරු සාරාංශය">
+        {teacherSummaryCards.map((card) => (
+          <article className={"teacher-summary-card teacher-summary-card--" + card.tone} key={card.id}>
+            <div className="teacher-summary-main">
+              <span className="teacher-summary-icon-box"><TeacherSummaryIcon name={card.id} className="teacher-summary-icon" /></span>
+              <div className="teacher-summary-copy">
+                <h2 className="teacher-summary-title">{card.title}</h2>
+                <p className="teacher-summary-value">{card.value}</p>
+                <p className="teacher-summary-description">{card.description}</p>
+              </div>
+            </div>
+          </article>
+        ))}
+      </section>
+
+      <div className="teacher-dashboard-insights">
+        <TeacherProgressChart />
+        <div className="teacher-dashboard-side-panels">
+          <TeacherAttentionPanel />
+          <TeacherRecentActivity />
+        </div>
+      </div>
+      <TeacherPerformanceTable />
+    </div>
+  )
+}
+
 export default function TeacherDashboard() {
   const isStudentsPage = window.location.pathname === "/teacher-dashboard/students"
+
+  function handleLogout() {
+    void signOutCurrentSession().finally(() => window.location.replace("/login"))
+  }
+
   return (
     <>
-      <SiteNavbar teacherProfile />
+      <SiteNavbar teacherProfile onStudentLogout={handleLogout} />
       <div className="teacher-dashboard">
         <aside className="teacher-dashboard-sidebar" aria-label="ගුරු උපකරණ පුවරුව">
           <nav className="teacher-dashboard-navigation" aria-label="ගුරු උපකරණ පුවරුව">
@@ -108,28 +346,7 @@ export default function TeacherDashboard() {
         </aside>
 
         <main className="teacher-dashboard-content" aria-labelledby={isStudentsPage ? "teacher-students-title" : "teacher-dashboard-title"}>
-          {!isStudentsPage && <section className="teacher-dashboard-banner" aria-hidden="true" />}
-          {!isStudentsPage && (
-            <section className="teacher-summary-grid" aria-label="ගුරු උපකරණ පුවරුවේ සාරාංශය">
-              {teacherSummaryCards.map((card) => (
-                <article className={`teacher-summary-card teacher-summary-card--${card.tone}`} key={card.id}>
-                  <div className="teacher-summary-main">
-                    <span className="teacher-summary-icon-box">
-                      <TeacherSummaryIcon name={card.id} className="teacher-summary-icon" />
-                    </span>
-                    <div className="teacher-summary-copy">
-                      <h2 className="teacher-summary-title">{card.title}</h2>
-                      <p className="teacher-summary-value">{card.value}</p>
-                      <div className="teacher-summary-details">
-                        <p className="teacher-summary-description">{card.description}</p>
-                        <TeacherSummaryIcon name={card.id} className="teacher-summary-decoration" />
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </section>
-          )}
+          {!isStudentsPage && <TeacherDashboardHome />}
           {isStudentsPage && <TeacherStudentList />}
         </main>
       </div>

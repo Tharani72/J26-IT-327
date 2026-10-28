@@ -117,7 +117,7 @@ export default function SiteNavbar({
                     role="menuitem"
                     onClick={() => {
                       setStudentMenuOpen(false)
-                      if (!teacherProfile) onStudentLogout?.()
+                      onStudentLogout?.()
                     }}
                   >
                     {teacherProfile ? "ඉවත් වන්න" : navigationText.logout}

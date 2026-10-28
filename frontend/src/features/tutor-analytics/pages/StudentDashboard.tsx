@@ -801,9 +801,6 @@ export default function StudentDashboard({ studentId }: { studentId: string }) {
             src={studentDashboardImage}
             alt="OmniSign SL student dashboard illustration"
           />
-          <p className="student-dashboard-demo-note" role="note">
-            �,��T�, �_�-��S�- �s��~�-��S�??����'�, �+�_����S��? �_�-��S�- ��?��s.
-          </p>
           <section className="student-dashboard-summary-grid" aria-label="Student learning summary">
             {summaryCards.map((card) => (
               <article className="student-summary-card" key={card.id}>

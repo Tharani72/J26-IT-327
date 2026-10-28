@@ -3,28 +3,43 @@ import StudentDashboard from "./features/tutor-analytics/pages/StudentDashboard"
 import TeacherDashboard from "./features/tutor-analytics/pages/TeacherDashboard"
 import LoginPage from "./components/common/LoginPage"
 
-import { useEffect, useState } from "react"
-import { getCurrentStudentSession, type StudentDemoSession } from "./services/authService"
+import { useEffect, useState, type ReactNode } from "react"
+import { getCurrentSession, type AuthSession } from "./services/authService"
 
-function ProtectedStudentDashboard() {
-  const [session, setSession] = useState<StudentDemoSession | null | undefined>(undefined)
+const isTeacherDashboardPresentationDemo =
+  import.meta.env.DEV &&
+  ["localhost", "127.0.0.1"].includes(window.location.hostname) &&
+  import.meta.env.VITE_TEACHER_DASHBOARD_DEMO === "true"
+
+function ProtectedDashboard({
+  role,
+  children,
+}: {
+  role: AuthSession["role"]
+  children: (session: AuthSession) => ReactNode
+}) {
+  const [session, setSession] = useState<AuthSession | null>(null)
 
   useEffect(() => {
     let active = true
-    getCurrentStudentSession().then((currentSession) => {
+    getCurrentSession().then((session) => {
       if (!active) return
-      if (!currentSession) {
+      if (!session) {
         window.location.replace("/login")
         return
       }
-      setSession(currentSession)
+      if (session.role !== role) {
+        window.location.replace(session.role === "teacher" ? "/teacher-dashboard" : "/student-dashboard")
+        return
+      }
+      setSession(session)
     })
     return () => {
       active = false
     }
-  }, [])
+  }, [role])
 
-  return session ? <StudentDashboard studentId={session.studentId} /> : null
+  return session ? children(session) : null
 }
 
 function App() {
@@ -35,11 +50,19 @@ function App() {
   }
 
   if (currentPath === "/student-dashboard") {
-    return <ProtectedStudentDashboard />
+    return (
+      <ProtectedDashboard role="student">
+        {(session) => session.role === "student" ? <StudentDashboard studentId={session.studentId} /> : null}
+      </ProtectedDashboard>
+    )
+  }
+
+  if (currentPath === "/teacher-dashboard" && isTeacherDashboardPresentationDemo) {
+    return <TeacherDashboard />
   }
 
   if (currentPath === "/teacher-dashboard" || currentPath === "/teacher-dashboard/students") {
-    return <TeacherDashboard />
+    return <ProtectedDashboard role="teacher">{(session) => session.role === "teacher" ? <TeacherDashboard /> : null}</ProtectedDashboard>
   }
 
   return <HomePage />

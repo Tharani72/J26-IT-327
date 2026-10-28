@@ -14,6 +14,13 @@ from .demo_auth import authorize_demo_login
 from .feature_contract import DEMO_STUDENT_CODES
 from .model_service import ModelService
 from .server_sessions import DemoSessionStore
+from .teacher_auth import (
+    InvalidTeacherCredentials,
+    TeacherAuthNotConfigured,
+    TeacherAuthUnavailable,
+    authenticate_teacher,
+    normalize_teacher_id,
+)
 
 SERVICE_ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(SERVICE_ROOT / ".env")
@@ -27,6 +34,11 @@ SESSION_TTL = int(os.getenv("SESSION_TTL_SECONDS", "28800"))
 class DemoLoginPayload(BaseModel):
     studentId: str
     email: str
+    password: str
+
+
+class TeacherLoginPayload(BaseModel):
+    teacherId: str
     password: str
 
 
@@ -44,10 +56,14 @@ def repository() -> AnalyticsRepository:
     return AnalyticsRepository("ML_DATABASE_URL")
 
 
-def _require_session(request: Request):
+def _require_student_session(request: Request):
     token = request.cookies.get(COOKIE_NAME)
     session = request.app.state.session_store.resolve(token)
-    if session is None or session.student_code not in DEMO_STUDENT_CODES:
+    if (
+        session is None
+        or session.role != "student"
+        or session.student_code not in DEMO_STUDENT_CODES
+    ):
         raise HTTPException(status_code=401, detail={"code": "UNAUTHENTICATED"})
     return token, session
 
@@ -73,7 +89,7 @@ def demo_login(payload: DemoLoginPayload, response: Response, request: Request):
     if not authorize_demo_login(code, payload.email, payload.password, configured_password, student):
         raise HTTPException(status_code=401, detail={"code": "INVALID_CREDENTIALS"})
 
-    token, _ = request.app.state.session_store.create(code)
+    token, _ = request.app.state.session_store.create(code, role="student")
     response.set_cookie(
         key=COOKIE_NAME,
         value=token,
@@ -86,9 +102,46 @@ def demo_login(payload: DemoLoginPayload, response: Response, request: Request):
     return {"role": "student", "studentId": code}
 
 
+@app.post("/api/auth/teacher/login")
+def teacher_login(payload: TeacherLoginPayload, response: Response, request: Request):
+    code = normalize_teacher_id(payload.teacherId)
+    if code is None:
+        raise HTTPException(status_code=401, detail={"code": "INVALID_CREDENTIALS"})
+    try:
+        authenticate_teacher(code, payload.password)
+    except InvalidTeacherCredentials:
+        raise HTTPException(status_code=401, detail={"code": "INVALID_CREDENTIALS"}) from None
+    except TeacherAuthNotConfigured:
+        raise HTTPException(status_code=503, detail={"code": "AUTH_NOT_CONFIGURED"}) from None
+    except TeacherAuthUnavailable:
+        raise HTTPException(status_code=503, detail={"code": "AUTH_UNAVAILABLE"}) from None
+
+    token, _ = request.app.state.session_store.create(code, role="teacher")
+    response.set_cookie(
+        key=COOKIE_NAME,
+        value=token,
+        max_age=SESSION_TTL,
+        httponly=True,
+        secure=COOKIE_SECURE,
+        samesite="lax",
+        path="/api",
+    )
+    return {"role": "teacher", "teacherId": code}
+
+
 @app.get("/api/auth/session")
 def current_session(request: Request):
-    token, session = _require_session(request)
+    token = request.cookies.get(COOKIE_NAME)
+    session = request.app.state.session_store.resolve(token)
+    if session is None:
+        raise HTTPException(status_code=401, detail={"code": "UNAUTHENTICATED"})
+
+    if session.role == "teacher" and session.teacher_id:
+        return {"role": "teacher", "teacherId": session.teacher_id}
+    if session.role != "student" or session.student_code not in DEMO_STUDENT_CODES:
+        request.app.state.session_store.revoke(token)
+        raise HTTPException(status_code=401, detail={"code": "UNAUTHENTICATED"})
+
     try:
         student = repository().get_synthetic_student(session.student_code)
     except DatabaseUnavailable:
@@ -109,7 +162,7 @@ def logout(request: Request, response: Response):
 
 @app.get("/api/student/dashboard")
 def student_dashboard(request: Request):
-    _, session = _require_session(request)
+    _, session = _require_student_session(request)
     try:
         student, sessions = repository().get_synthetic_dashboard(session.student_code)
     except DatabaseUnavailable:

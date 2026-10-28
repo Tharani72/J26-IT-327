@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react"
 import {
   AuthNotConfiguredError,
+  AuthUnavailableError,
   signInWithRole,
   type LoginRole,
 } from "../../services/authService"
@@ -31,7 +32,7 @@ const roleContent: Record<LoginRole, { heading: string; description: string; ide
   teacher: {
     heading: "ගුරු පිවිසුම",
     description: "ඔබගේ ගුරු ගිණුමට පිවිසෙන්න.",
-    identifierLabel: "විද්‍යුත් තැපැල් ලිපිනය",
+    identifierLabel: "ගුරු හැඳුනුම් අංකය",
   },
   parent: {
     heading: "දෙමාපිය පිවිසුම",
@@ -46,17 +47,25 @@ const roleContent: Record<LoginRole, { heading: string; description: string; ide
 }
 
 const messages = {
+  teacherIdRequired: "කරුණාකර ගුරු හැඳුනුම් අංකය ඇතුළත් කරන්න.",
+  invalidTeacherId: "TCH001 වැනි නිවැරදි ගුරු හැඳුනුම් අංකයක් ඇතුළත් කරන්න.",
+  passwordRequired: "කරුණාකර මුරපදය ඇතුළත් කරන්න.",
   required: "කරුණාකර මෙම තොරතුර ඇතුළත් කරන්න.",
   invalidEmail: "කරුණාකර නිවැරදි විද්‍යුත් තැපැල් ලිපිනයක් ඇතුළත් කරන්න.",
   incorrectCredentials: "ඔබ ඇතුළත් කළ තොරතුරු නිවැරදි නොවේ. නැවත උත්සාහ කරන්න.",
   loginFailure: "පිවිසීමේදී ගැටලුවක් ඇති විය. නැවත උත්සාහ කරන්න.",
   loading: "පිවිසෙමින්...",
-  authUnavailable: "සත්‍ය පිවිසුම් සේවාව තවම සම්බන්ධ කර නැත. මෙම තිරය දැනට අතුරුමුහුණත් පරීක්ෂාව සඳහා පමණි.",
+  authNotConfigured: "පිවිසුම් සේවාව සඳහා සේවාදායක සැකසුම් සම්පූර්ණ කර නැත. කරුණාකර පද්ධති පරිපාලක අමතන්න.",
+  authUnavailable: "පිවිසුම් සේවාව සමඟ සම්බන්ධ විය නොහැක. අන්තර්ජාල සම්බන්ධතාව පරීක්ෂා කර නැවත උත්සාහ කරන්න.",
   forgotUnavailable: "මුරපදය නැවත සැකසීමේ සේවාව තවම සම්බන්ධ කර නැත.",
 }
 
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+}
+
+function isValidTeacherId(value: string) {
+  return /^TCH[0-9]{3,}$/i.test(value)
 }
 
 function PasswordVisibilityIcon({ visible }: { visible: boolean }) {
@@ -81,6 +90,7 @@ function PasswordVisibilityIcon({ visible }: { visible: boolean }) {
 export default function LoginForm({ role, onBack }: LoginFormProps) {
   const content = roleContent[role]
   const isStudent = role === "student"
+  const isTeacher = role === "teacher"
   const [studentId, setStudentId] = useState("")
   const [identifier, setIdentifier] = useState("")
   const [password, setPassword] = useState("")
@@ -103,14 +113,18 @@ export default function LoginForm({ role, onBack }: LoginFormProps) {
       nextErrors.studentId = messages.required
     }
 
-    if (!normalizedIdentifier) {
+    if (isTeacher && !normalizedIdentifier) {
+      nextErrors.identifier = messages.teacherIdRequired
+    } else if (isTeacher && !isValidTeacherId(normalizedIdentifier)) {
+      nextErrors.identifier = messages.invalidTeacherId
+    } else if (!normalizedIdentifier) {
       nextErrors.identifier = messages.required
-    } else if (!isValidEmail(normalizedIdentifier)) {
+    } else if (!isTeacher && !isValidEmail(normalizedIdentifier)) {
       nextErrors.identifier = messages.invalidEmail
     }
 
     if (!password) {
-      nextErrors.password = messages.required
+      nextErrors.password = messages.passwordRequired
     }
 
     setErrors(nextErrors)
@@ -123,11 +137,10 @@ export default function LoginForm({ role, onBack }: LoginFormProps) {
         identifier: normalizedIdentifier,
         password,
         studentId: isStudent ? normalizedStudentId : undefined,
+        teacherId: isTeacher ? normalizedIdentifier.toUpperCase() : undefined,
       })
 
-      if (session.role === "student") {
-        window.location.assign("/student-dashboard")
-      }
+      window.location.assign(session.role === "teacher" ? "/teacher-dashboard" : "/student-dashboard")
     } catch (error) {
       const errorCode =
         typeof error === "object" && error !== null && "code" in error
@@ -135,7 +148,9 @@ export default function LoginForm({ role, onBack }: LoginFormProps) {
           : undefined
 
       if (error instanceof AuthNotConfiguredError) {
-        setFeedback({ kind: "info", message: messages.authUnavailable })
+        setFeedback({ kind: "error", message: messages.authNotConfigured })
+      } else if (error instanceof AuthUnavailableError) {
+        setFeedback({ kind: "error", message: messages.authUnavailable })
       } else if (errorCode === "INVALID_CREDENTIALS") {
         setFeedback({ kind: "error", message: messages.incorrectCredentials })
       } else {
@@ -184,16 +199,16 @@ export default function LoginForm({ role, onBack }: LoginFormProps) {
           <label htmlFor="login-identifier">{isStudent ? content.identifierLabel.split(" / ")[1] : content.identifierLabel}</label>
           <input
             id="login-identifier"
-            type="email"
-            inputMode="email"
-            autoComplete={isStudent ? "username" : "email"}
+            type={isTeacher ? "text" : "email"}
+            inputMode={isTeacher ? "text" : "email"}
+            autoComplete={isStudent || isTeacher ? "username" : "email"}
             value={identifier}
             onChange={(event) => {
               setIdentifier(event.target.value)
               setErrors((current) => ({ ...current, identifier: undefined }))
               setFeedback(null)
             }}
-            placeholder={isStudent ? content.identifierLabel.split(" / ")[1] : content.identifierLabel}
+            placeholder={isTeacher ? "TCH001" : isStudent ? content.identifierLabel.split(" / ")[1] : content.identifierLabel}
             aria-invalid={Boolean(errors.identifier)}
             aria-describedby={errors.identifier ? "login-identifier-error" : undefined}
           />

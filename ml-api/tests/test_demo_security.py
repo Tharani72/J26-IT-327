@@ -7,7 +7,7 @@ from app.server_sessions import DemoSessionStore
 def test_only_known_synthetic_demo_student_can_authenticate():
     student = {
         "student_code": "ST001",
-        "email": "student01@omnisign.demo",
+        "email": "st001@omnisign.demo",
         "data_source": "synthetic",
     }
     assert authorize_demo_login("ST001", student["email"], "demo-pass", "demo-pass", student)
@@ -20,7 +20,7 @@ def test_only_known_synthetic_demo_student_can_authenticate():
 def test_real_student_rows_are_rejected_even_with_matching_credentials():
     student = {
         "student_code": "ST001",
-        "email": "student01@omnisign.demo",
+        "email": "st001@omnisign.demo",
         "data_source": "real",
     }
     assert not authorize_demo_login("ST001", student["email"], "demo-pass", "demo-pass", student)

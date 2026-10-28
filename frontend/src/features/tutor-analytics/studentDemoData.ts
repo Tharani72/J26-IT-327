@@ -95,7 +95,7 @@ const lessonCatalog: { title: string; artwork: LessonArtworkKind }[] = [
 const studentSeeds: StudentDemoSeed[] = [
   {
     "studentId": "ST001",
-    "email": "student01@omnisign.demo",
+    "email": "st001@omnisign.demo",
     "displayName": "\u0db1\u0dd2\u0db8\u0dbd\u0dd2",
     "grade": "3 \u0dc1\u0dca\u200d\u0dbb\u0dda\u0dab\u0dd2\u0dba",
     "recommendation": {
@@ -195,7 +195,7 @@ const studentSeeds: StudentDemoSeed[] = [
   },
   {
     "studentId": "ST002",
-    "email": "student02@omnisign.demo",
+    "email": "st002@omnisign.demo",
     "displayName": "\u0d9a\u0dc0\u0dd2\u0db3\u0dd4",
     "grade": "4 \u0dc1\u0dca\u200d\u0dbb\u0dda\u0dab\u0dd2\u0dba",
     "recommendation": {
@@ -295,7 +295,7 @@ const studentSeeds: StudentDemoSeed[] = [
   },
   {
     "studentId": "ST003",
-    "email": "student03@omnisign.demo",
+    "email": "st003@omnisign.demo",
     "displayName": "\u0dc3\u0dd9\u0dc0\u0dca\u0db8\u0dd2",
     "grade": "3 \u0dc1\u0dca\u200d\u0dbb\u0dda\u0dab\u0dd2\u0dba",
     "recommendation": {
@@ -395,7 +395,7 @@ const studentSeeds: StudentDemoSeed[] = [
   },
   {
     "studentId": "ST004",
-    "email": "student04@omnisign.demo",
+    "email": "st004@omnisign.demo",
     "displayName": "\u0dad\u0dbb\u0dd4\u0dc2\u0dd2",
     "grade": "5 \u0dc1\u0dca\u200d\u0dbb\u0dda\u0dab\u0dd2\u0dba",
     "recommendation": {
@@ -495,7 +495,7 @@ const studentSeeds: StudentDemoSeed[] = [
   },
   {
     "studentId": "ST005",
-    "email": "student05@omnisign.demo",
+    "email": "st005@omnisign.demo",
     "displayName": "\u0daf\u0dd2\u0db1\u0dd4\u0d9a",
     "grade": "4 \u0dc1\u0dca\u200d\u0dbb\u0dda\u0dab\u0dd2\u0dba",
     "recommendation": {

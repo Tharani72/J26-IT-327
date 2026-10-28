@@ -46,7 +46,7 @@ def test_api_uses_cookie_session_and_returns_unpersisted_model_prediction(monkey
             "/api/auth/demo/login",
             json={
                 "studentId": "ST001",
-                "email": "student01@omnisign.demo",
+                "email": "st001@omnisign.demo",
                 "password": "test-only-demo-password",
             },
         )
@@ -71,7 +71,7 @@ def test_api_rejects_real_session_rows(monkeypatch):
             "/api/auth/demo/login",
             json={
                 "studentId": "ST001",
-                "email": "student01@omnisign.demo",
+                "email": "st001@omnisign.demo",
                 "password": "test-only-demo-password",
             },
         )

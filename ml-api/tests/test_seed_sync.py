@@ -19,6 +19,13 @@ def test_ui_percentage_ratios_convert_to_database_fractions():
 def test_seed_reproduces_verified_feature_formulas_and_ratio_units():
     students, sessions = build_expected_records(load_seed_payload())
     assert {student["student_code"] for student in students} == {"ST001", "ST002", "ST003", "ST004", "ST005"}
+    assert {student["student_code"]: student["email"] for student in students} == {
+        "ST001": "st001@omnisign.demo",
+        "ST002": "st002@omnisign.demo",
+        "ST003": "st003@omnisign.demo",
+        "ST004": "st004@omnisign.demo",
+        "ST005": "st005@omnisign.demo",
+    }
     assert len(sessions) == 25
     first = next(row for row in sessions if row["student_code"] == "ST001" and row["session_number"] == 1)
     second = next(row for row in sessions if row["student_code"] == "ST001" and row["session_number"] == 2)

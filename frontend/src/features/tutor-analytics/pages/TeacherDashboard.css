@@ -201,54 +201,6 @@
     transition: none;
   }
 }
-.teacher-dashboard-banner {
-  position: relative;
-  box-sizing: border-box;
-  width: 100%;
-  aspect-ratio: 4 / 1;
-  height: clamp(120px, 8.33vw, 140px);
-  min-height: 120px;
-  max-height: 140px;
-  margin-bottom: 24px;
-  overflow: hidden;
-  isolation: isolate;
-  border: 1px solid #e2efff;
-  border-radius: 20px;
-  background: #eaf5ff;
-  box-shadow: 0 8px 24px rgba(35, 91, 156, 0.09);
-}
-
-@media (max-width: 900px) and (min-width: 721px) {
-  .teacher-dashboard-banner {
-    height: clamp(110px, 13.3vw, 120px);
-    min-height: 110px;
-    max-height: 120px;
-  }
-}
-
-@media (max-width: 720px) {
-  .teacher-dashboard-banner {
-    height: clamp(90px, 24vw, 110px);
-    min-height: 0;
-    max-height: none;
-    aspect-ratio: auto;
-    margin-bottom: 20px;
-    border-radius: 16px;
-  }
-}
-
-@media (max-width: 500px) {
-  .teacher-dashboard-banner {
-    height: clamp(90px, 24vw, 110px);
-  }
-}
-
-@media (max-width: 380px) {
-  .teacher-dashboard-banner {
-    height: 90px;
-  }
-}
-
 .teacher-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -423,6 +375,810 @@
 
   .teacher-summary-value {
     font-size: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .teacher-summary-card {
+    transition: none;
+  }
+}
+
+.teacher-dashboard-main {
+  display: grid;
+  min-width: 0;
+  gap: 18px;
+  color: #17324f;
+  font-family: "Noto Sans Sinhala", "Nirmala UI", "Iskoola Pota", Arial, sans-serif;
+}
+
+.teacher-dashboard-banner {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 180px;
+  height: 190px;
+  max-height: 200px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  padding: 6px 14px;
+  border: 1px solid #dbeafe;
+  border-radius: 18px;
+  background: linear-gradient(112deg, #eef7ff 0%, #e8f2ff 55%, #d8eaff 100%);
+  box-shadow: 0 8px 24px rgba(35, 91, 156, 0.09);
+}
+
+.teacher-welcome-copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  padding-right: 0;
+}
+
+.teacher-welcome-eyebrow,
+.teacher-panel-eyebrow {
+  margin: 0;
+  color: #3478c9;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.teacher-welcome-eyebrow {
+  color: #3478c9;
+  font-family: "Noto Sans Sinhala", "Nirmala UI", "Iskoola Pota", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: 1.35;
+  text-transform: none;
+}
+
+.teacher-welcome-copy h1 {
+  margin: 0;
+  color: #102f67;
+  font-size: clamp(25px, 2vw, 28px);
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: normal;
+}
+
+.teacher-welcome-copy > p {
+  max-width: 620px;
+  margin: 0;
+  color: #506985;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.teacher-synthetic-badge {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  gap: 6px;
+  margin-top: 1px;
+  padding: 4px 8px;
+  border: 1px solid rgba(52, 120, 201, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #355a80;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.teacher-synthetic-badge > span {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: #e19a35;
+  box-shadow: 0 0 0 3px rgba(225, 154, 53, 0.15);
+}
+
+.teacher-welcome-art {
+  position: relative;
+  flex: 0 0 260px;
+  min-width: 0;
+  width: 260px;
+  height: 130px;
+  min-height: 120px;
+  max-height: 140px;
+  overflow: hidden;
+  align-self: center;
+  border-radius: 16px;
+  background: #d6eaff;
+}
+
+.teacher-welcome-art::before {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 18%;
+  background: linear-gradient(90deg, #e8f2ff, rgba(232, 242, 255, 0));
+  content: "";
+  pointer-events: none;
+}
+
+.teacher-welcome-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: cover;
+  object-position: center;
+}
+
+.teacher-summary-grid {
+  grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+  gap: 14px;
+  align-items: stretch;
+}
+
+.teacher-summary-card {
+  height: auto;
+  min-height: 146px;
+  padding: 18px;
+  border: 1px solid #e4edf7;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(23, 54, 102, 0.055);
+}
+
+.teacher-summary-card--blue {
+  border-color: #dce9fa;
+  background: linear-gradient(145deg, #ffffff, #f6faff);
+}
+
+.teacher-summary-main {
+  display: grid;
+  height: 100%;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+}
+
+.teacher-summary-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+}
+
+.teacher-summary-copy {
+  min-height: 108px;
+  height: 100%;
+}
+
+.teacher-summary-title {
+  min-height: 2.8em;
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.teacher-summary-value {
+  margin: 4px 0 2px;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 27px;
+  line-height: 1.2;
+}
+
+.teacher-summary-description {
+  margin-top: auto;
+  font-size: 11px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.teacher-dashboard-insights {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.9fr);
+  align-items: stretch;
+  gap: 18px;
+}
+
+.teacher-dashboard-side-panels {
+  display: grid;
+  min-width: 0;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.teacher-dashboard-panel {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid #e5edf6;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 7px 22px rgba(23, 54, 102, 0.055);
+}
+
+.teacher-panel-heading {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.teacher-panel-heading > div {
+  min-width: 0;
+}
+
+.teacher-panel-eyebrow {
+  margin-bottom: 5px;
+  font-size: 10px;
+  letter-spacing: 0.045em;
+}
+
+.teacher-panel-heading h2 {
+  margin: 0;
+  color: #153a68;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.teacher-panel-heading > div > p:last-child:not(.teacher-panel-eyebrow) {
+  margin: 5px 0 0;
+  color: #718198;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.teacher-panel-icon {
+  display: inline-flex;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.teacher-panel-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.teacher-panel-icon--blue {
+  background: #eaf2ff;
+  color: #3478ff;
+}
+
+.teacher-panel-icon--orange {
+  background: #fff3df;
+  color: #df922e;
+}
+
+.teacher-panel-icon--green {
+  background: #e6f7ec;
+  color: #28a768;
+}
+
+.teacher-progress-chart-wrap {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.teacher-progress-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.teacher-progress-gridline line {
+  stroke: #edf2f8;
+  stroke-width: 1;
+}
+
+.teacher-progress-gridline text {
+  fill: #8796aa;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 10px;
+}
+
+.teacher-progress-line {
+  fill: none;
+  stroke: #3478ff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.teacher-progress-point {
+  fill: #ffffff;
+  stroke: #3478ff;
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.teacher-progress-date-axis {
+  display: grid;
+  gap: 2px;
+  margin: -3px 0 0 7.5%;
+  color: #718198;
+  font-family: Inter, "Noto Sans Sinhala", Arial, sans-serif;
+  font-size: 10px;
+  text-align: center;
+}
+
+.teacher-data-footnote,
+.teacher-panel-note {
+  margin: 12px 0 0;
+  color: #75849a;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.teacher-panel-note {
+  margin: -6px 0 12px;
+}
+
+.teacher-attention-list,
+.teacher-activity-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.teacher-attention-list {
+  gap: 8px;
+}
+
+.teacher-attention-item {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 9px;
+  border-radius: 12px;
+  background: #fffaf2;
+}
+
+.teacher-dashboard-avatar {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dce9fa;
+  border-radius: 50%;
+  background: #edf5ff;
+  color: #3478c9;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.teacher-attention-copy,
+.teacher-performance-student > span:last-child,
+.teacher-activity-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.teacher-attention-copy strong,
+.teacher-performance-student strong {
+  color: #243d5a;
+  font-size: 11px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.teacher-attention-copy small,
+.teacher-performance-student small,
+.teacher-activity-copy small {
+  color: #7c8ba0;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.teacher-attention-score {
+  margin-left: auto;
+  color: #bf7620;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.teacher-activity-list {
+  gap: 2px;
+}
+
+.teacher-activity-item {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 0;
+  border-bottom: 1px solid #f0f3f7;
+}
+
+.teacher-activity-item:last-child {
+  border-bottom: 0;
+}
+
+.teacher-activity-marker {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #edf8f1;
+  color: #28a768;
+}
+
+.teacher-activity-marker svg {
+  width: 16px;
+  height: 16px;
+}
+
+.teacher-activity-copy {
+  flex: 1;
+}
+
+.teacher-activity-copy strong {
+  color: #344d68;
+  font-size: 10px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.teacher-activity-item time,
+.teacher-performance-table time {
+  color: #75849a;
+  font-family: Inter, "Noto Sans Sinhala", Arial, sans-serif;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.teacher-dashboard-empty {
+  margin: 14px 0;
+  color: #718198;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.teacher-performance-panel {
+  padding-bottom: 15px;
+}
+
+.teacher-performance-heading {
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.teacher-performance-count {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #eef5ff;
+  color: #3478c9;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.teacher-performance-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #edf1f6;
+  border-radius: 13px;
+}
+
+.teacher-performance-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  color: #42566e;
+  font-size: 11px;
+  text-align: left;
+}
+
+.teacher-performance-table th {
+  padding: 12px 13px;
+  background: #f7faff;
+  color: #6b7c91;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.6;
+  white-space: normal;
+}
+
+.teacher-performance-table td {
+  padding: 11px 13px;
+  border-top: 1px solid #eff2f6;
+  line-height: 1.55;
+  white-space: nowrap;
+}
+
+.teacher-performance-student {
+  display: flex;
+  min-width: 150px;
+  align-items: center;
+  gap: 9px;
+  white-space: normal;
+}
+
+.teacher-performance-value {
+  color: #2d5686;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 12px;
+}
+
+.teacher-performance-progress {
+  display: flex;
+  min-width: 115px;
+  align-items: center;
+  gap: 8px;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 10px;
+}
+
+.teacher-performance-track {
+  display: block;
+  width: 68px;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e9eff6;
+}
+
+.teacher-performance-track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #57a8f5, #3478ff);
+}
+
+.teacher-performance-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.teacher-performance-status.is-good {
+  background: #e9f7ee;
+  color: #27814b;
+}
+
+.teacher-performance-status.is-support {
+  background: #fff2df;
+  color: #b66e1c;
+}
+
+@media (max-width: 1000px) {
+  .teacher-dashboard-insights {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .teacher-dashboard-side-panels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+  }
+}
+
+@media (max-width: 960px) {
+  .teacher-dashboard-banner {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+    height: auto;
+    max-height: none;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .teacher-welcome-art {
+    flex: 0 0 auto;
+    width: 100%;
+    height: 150px;
+    min-height: 140px;
+    max-height: 160px;
+  }
+}
+
+@media (max-width: 720px) {
+  .teacher-dashboard-main {
+    gap: 16px;
+  }
+
+  .teacher-dashboard-banner {
+    flex-direction: column;
+    min-height: 0;
+    height: auto;
+    max-height: none;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 17px;
+  }
+
+  .teacher-welcome-copy {
+    gap: 7px;
+  }
+
+  .teacher-welcome-copy h1 {
+    font-size: clamp(21px, 5vw, 27px);
+  }
+
+  .teacher-welcome-copy > p {
+    font-size: 12px;
+  }
+
+  .teacher-synthetic-badge {
+    align-items: flex-start;
+    border-radius: 12px;
+    font-size: 11px;
+  }
+
+  .teacher-welcome-art {
+    height: 145px;
+    min-height: 135px;
+    max-height: 155px;
+  }
+
+  .teacher-welcome-art img {
+    min-height: 0;
+  }
+
+  .teacher-summary-grid {
+    grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+    gap: 10px;
+  }
+
+  .teacher-summary-card {
+    min-height: 136px;
+    padding: 14px;
+  }
+
+  .teacher-summary-main {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .teacher-summary-icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+
+  .teacher-summary-icon {
+    width: 21px;
+    height: 21px;
+  }
+
+  .teacher-summary-title {
+    font-size: 12px;
+  }
+
+  .teacher-summary-value {
+    font-size: 24px;
+  }
+
+  .teacher-dashboard-panel {
+    padding: 16px;
+    border-radius: 15px;
+  }
+
+  .teacher-dashboard-side-panels {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .teacher-dashboard-banner {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 14px;
+  }
+
+  .teacher-welcome-copy {
+    max-width: 100%;
+    padding-right: 0;
+  }
+
+  .teacher-welcome-art {
+    position: relative;
+    flex: 0 0 auto;
+    width: 100%;
+    height: 140px;
+    min-height: 130px;
+    max-height: 150px;
+    border-radius: 14px;
+    opacity: 1;
+  }
+
+  .teacher-welcome-art::before {
+    display: none;
+  }
+
+  .teacher-welcome-art img {
+    min-height: 0;
+  }
+
+  .teacher-synthetic-badge {
+    max-width: 100%;
+  }
+
+  .teacher-dashboard-side-panels {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .teacher-performance-heading {
+    align-items: flex-start;
+  }
+
+  .teacher-performance-count {
+    max-width: 110px;
+    white-space: normal;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 380px) {
+  .teacher-dashboard-banner {
+    padding: 16px;
+  }
+
+  .teacher-welcome-copy h1 {
+    max-width: 100%;
+    font-size: 21px;
+  }
+
+  .teacher-welcome-copy > p {
+    max-width: 100%;
+    font-size: 11px;
+  }
+
+  .teacher-welcome-art {
+    height: 130px;
+    min-height: 120px;
+    max-height: 140px;
+  }
+
+  .teacher-synthetic-badge {
+    max-width: 100%;
+  }
+
+  .teacher-summary-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .teacher-summary-card {
+    min-height: 124px;
+  }
+
+  .teacher-summary-copy {
+    min-height: 92px;
   }
 }
 
