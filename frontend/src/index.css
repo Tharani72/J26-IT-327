@@ -1,1 +1,622 @@
-body { margin: 0; font-family: Arial, sans-serif; }
+/* ========================================================
+   OMNISIGN SL - SITE NAVBAR & FOOTER STYLES (GLASSMORPHISM)
+   ======================================================== */
+
+/* 1. HEADER (Site Navbar) */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(14px);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 10px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.site-logo {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+}
+
+.site-brand-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.site-name {
+  font-size: 20px;
+  font-weight: 900;
+  color: #1e3a8a;
+  line-height: 1.1;
+}
+
+.site-tagline {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.student-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.notification-bell-button {
+  position: relative;
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.notification-bell-button:hover {
+  transform: scale(1.05);
+}
+
+.notification-bell-icon {
+  width: 20px;
+  height: 20px;
+  stroke: #1e40af;
+  stroke-width: 2;
+}
+
+.notification-bell-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+.student-account-menu {
+  position: relative;
+}
+
+.student-account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 28px;
+  padding: 5px 14px 5px 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  transition: all 0.15s;
+}
+
+.student-account:hover {
+  border-color: #3b82f6;
+}
+
+.student-profile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.student-avatar-art {
+  width: 100%;
+  height: 100%;
+}
+
+.student-profile-details {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.student-profile-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.student-profile-grade {
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.student-chevron-icon {
+  width: 16px;
+  height: 16px;
+  stroke: #64748b;
+  stroke-width: 2;
+}
+
+.student-profile-menu {
+  position: absolute;
+  right: 0;
+  top: 115%;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e2e8f0;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  min-width: 170px;
+  z-index: 1000;
+}
+
+.student-profile-menu button {
+  background: none;
+  border: none;
+  padding: 9px 12px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.student-profile-menu button:hover {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+/* Home Navbar items (fallback) */
+.home-nav-links {
+  display: flex;
+  gap: 20px;
+}
+.home-nav-link {
+  text-decoration: none;
+  color: #475569;
+  font-weight: 700;
+  font-size: 14px;
+}
+.home-nav-link:hover, .home-nav-link.is-active {
+  color: #2563eb;
+}
+.home-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.home-language-selector button {
+  border: none;
+  background: none;
+  font-weight: bold;
+  cursor: pointer;
+  color: #64748b;
+}
+.home-language-selector button.is-selected {
+  color: #2563eb;
+}
+.home-login-button {
+  background: #2563eb;
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+/* 2. FOOTER (Clean & Organized Columns) */
+.home-footer {
+  margin-top: 50px;
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(14px);
+  border-top: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 -6px 25px rgba(0, 0, 0, 0.04);
+  padding: 40px 32px 20px;
+  color: #334155;
+  position: relative;
+  z-index: 10;
+}
+
+.home-footer-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+  gap: 36px;
+  margin-bottom: 24px;
+}
+
+.home-footer-brand img {
+  height: 48px;
+  width: auto;
+  margin-bottom: 12px;
+}
+
+.home-footer-brand h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #1e3a8a;
+  font-weight: 900;
+}
+
+.home-footer-brand p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.home-footer-column h2, 
+.home-footer-social h2 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 14px 0;
+}
+
+.home-footer-link-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.home-footer-link {
+  text-decoration: none;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+
+.home-footer-link:hover {
+  color: #2563eb;
+}
+
+.home-footer-link.is-unavailable {
+  color: #94a3b8;
+  cursor: default;
+}
+
+.home-footer-social-list {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.home-footer-social-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e3a8a;
+  border: 1.5px solid #e2e8f0;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.home-footer-social-icon:hover {
+  background: #2563eb;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* ⚠️ මෙන්න යෝධ SVG අයිකන් ප්‍රශ්නය විසඳන මැජික් රූල් එක */
+.home-footer-social-icon svg {
+  width: 20px !important;
+  height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  fill: currentColor !important;
+  display: block;
+}
+
+.home-footer-social p {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+.home-footer-bottom {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-top: 18px;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .home-footer-main {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 550px) {
+  .home-footer-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================================
+   HEADER BRAND (NAVBAR LOGO FIX)
+   ======================================================== */
+.site-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px; /* Logo එක සහ Text එක අතර පරතරය */
+}
+
+/* 🟢 මෙන්න Logo එක පැහැදිලිව ලොකුවට පේන්න හදපු CSS එක */
+.site-logo {
+  height: 60px; /* කලින් 42px තිබ්බ එක 60px දක්වා වැඩි කළා */
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.08)); /* ලෝගෝ එක කැපිලා පේන්න soft shadow එකක් */
+}
+
+.site-brand-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.site-name {
+  font-size: 24px; /* Title එක පැහැදිලි කළා */
+  font-weight: 900;
+  color: #1e3a8a;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.site-tagline {
+  font-size: 13px; /* "සංඥාවෙන් ඉගෙනුමට" tagline එක පැහැදිලි කළා */
+  color: #475569;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* ========================================================
+   FOOTER BRAND (FOOTER LOGO FIX)
+   ======================================================== */
+/* 🟢 Footer එකේ Logo එක සහ Text එක ලස්සනට side-by-side පෙළගැස්වීම */
+.home-footer-brand {
+  display: flex !important;
+  align-items: center;
+  gap: 16px;
+}
+
+.home-footer-brand img {
+  height: 62px !important; /* Footer logo එකත් 62px ලොකු කළා */
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 0 !important;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.08));
+}
+
+.home-footer-brand div {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-footer-brand h2 {
+  margin: 0;
+  font-size: 22px;
+  color: #1e3a8a;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.home-footer-brand p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* =========================================
+   OmniSign SL - Shared SiteNavbar Styles 
+   ========================================= */
+
+/* Header Container */
+.site-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 32px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 5000;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Left Side: Brand & Logo */
+.site-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.site-logo {
+  height: 40px;
+  width: auto;
+}
+
+.site-brand-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.site-name {
+  font-size: 22px;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+}
+
+.site-tagline {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: bold;
+}
+
+/* Right Side: Profile & Controls */
+.student-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Notification Bell */
+.notification-bell-button {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+}
+
+.notification-bell-icon {
+  width: 20px;
+  height: 20px;
+  stroke: #475569;
+  stroke-width: 2;
+}
+
+.notification-bell-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 10px;
+  height: 10px;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 2px solid #f8fafc;
+}
+
+/* Profile Menu Button */
+.student-account-menu {
+  position: relative;
+}
+
+.student-account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 6px 16px 6px 6px;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.student-profile-avatar {
+  width: 36px;
+  height: 36px;
+  display: inline-block;
+}
+
+.student-avatar-art {
+  width: 100%;
+  height: 100%;
+}
+
+.student-profile-details {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.student-profile-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #0f172a;
+}
+
+.student-profile-grade {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: bold;
+}
+
+.student-chevron-icon {
+  width: 16px;
+  height: 16px;
+  stroke: #94a3b8;
+  stroke-width: 2;
+}
+
+/* Profile Dropdown Menu */
+.student-profile-menu {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+}
+
+.student-profile-menu button {
+  padding: 10px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  color: #334155;
+  border-radius: 6px;
+}
+
+.student-profile-menu button:hover {
+  background: #f1f5f9;
+}
+
+/* Logout Button */
+.student-profile-menu button:last-child {
+  color: #b91c1c;
+  background: #fee2e2;
+  margin-top: 4px;
+}
+.student-profile-menu button:last-child:hover {
+  background: #fca5a5;
+}
