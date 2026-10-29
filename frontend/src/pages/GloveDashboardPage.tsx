@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GlovePracticeSession from '../features/smart-glove/GlovePracticeSession';
-import GloveTestBenchPage from './GloveTestBenchPage';
-import GloveEvaluationPage from './GloveEvaluationPage';
+import { supabase } from '../services/supabase';
+import { gloveBle } from '../services/gloveBleService';
 
 interface SignLetter {
   id: string;
@@ -15,27 +15,27 @@ interface SignLetter {
 
 const SLSL_ALPHABET: SignLetter[] = [
   // ස්වර (Vowels - 16)
-  { id: 'v1', letter: 'අ', name: 'A', type: 'vowel', progress: 100, stars: 3, isDynamic: false },
-  { id: 'v2', letter: 'ආ', name: 'Aa', type: 'vowel', progress: 85, stars: 3, isDynamic: false },
-  { id: 'v3', letter: 'ඇ', name: 'Ae', type: 'vowel', progress: 60, stars: 2, isDynamic: false },
-  { id: 'v4', letter: 'ඈ', name: 'Aae', type: 'vowel', progress: 40, stars: 1, isDynamic: true },
-  { id: 'v5', letter: 'ඉ', name: 'I', type: 'vowel', progress: 90, stars: 3, isDynamic: false },
-  { id: 'v6', letter: 'ඊ', name: 'Ii', type: 'vowel', progress: 75, stars: 2, isDynamic: false },
-  { id: 'v7', letter: 'උ', name: 'U', type: 'vowel', progress: 50, stars: 1, isDynamic: false },
-  { id: 'v8', letter: 'ඌ', name: 'Uu', type: 'vowel', progress: 20, stars: 0, isDynamic: false },
-  { id: 'v9', letter: 'එ', name: 'E', type: 'vowel', progress: 80, stars: 2, isDynamic: false },
-  { id: 'v10', letter: 'ඒ', name: 'Ee', type: 'vowel', progress: 30, stars: 1, isDynamic: false },
-  { id: 'v11', letter: 'ඔ', name: 'O', type: 'vowel', progress: 10, stars: 0, isDynamic: false },
+  { id: 'v1', letter: 'අ', name: 'A', type: 'vowel', progress: 0, stars: 0, isDynamic: false },
+  { id: 'v2', letter: 'ආ', name: 'Aa', type: 'vowel', progress: 0, stars: 0, isDynamic: false },
+  { id: 'v3', letter: 'ඇ', name: 'Ae', type: 'vowel', progress: 0, stars: 0, isDynamic: false },
+  { id: 'v4', letter: 'ඈ', name: 'Aae', type: 'vowel', progress: 0, stars: 0, isDynamic: true },
+  { id: 'v5', letter: 'ඉ', name: 'I', type: 'vowel', progress: 0, stars: 0, isDynamic: false },
+  { id: 'v6', letter: 'ඊ', name: 'Ii', type: 'vowel', progress: 0, stars: 0, isDynamic: false },
+  { id: 'v7', letter: 'උ', name: 'U', type: 'vowel', progress: 0, stars: 0, isDynamic: false },
+  { id: 'v8', letter: 'ඌ', name: 'Uu', type: 'vowel', progress: 0, stars: 0, isDynamic: false },
+  { id: 'v9', letter: 'එ', name: 'E', type: 'vowel', progress: 0, stars: 0, isDynamic: false },
+  { id: 'v10', letter: 'ඒ', name: 'Ee', type: 'vowel', progress: 0, stars: 0, isDynamic: false },
+  { id: 'v11', letter: 'ඔ', name: 'O', type: 'vowel', progress: 0, stars: 0, isDynamic: false },
   { id: 'v12', letter: 'ඕ', name: 'Oo', type: 'vowel', progress: 0, stars: 0, isDynamic: true },
   { id: 'v13', letter: 'ඓ', name: 'Ai', type: 'vowel', progress: 0, stars: 0, isDynamic: false },
   { id: 'v14', letter: 'ඖ', name: 'Au', type: 'vowel', progress: 0, stars: 0, isDynamic: true },
   { id: 'v15', letter: 'ං', name: 'Binduwa', type: 'vowel', progress: 0, stars: 0, isDynamic: true },
   { id: 'v16', letter: 'ඃ', name: 'Visargaya', type: 'vowel', progress: 0, stars: 0, isDynamic: true },
 
-  // ප්‍රධාන ව්‍යංජන (Consonants)
-  { id: 'c1', letter: 'ක', name: 'Ka', type: 'consonant', progress: 95, stars: 3, isDynamic: false },
-  { id: 'c2', letter: 'ඛ', name: 'Kha', type: 'consonant', progress: 10, stars: 0, isDynamic: false },
-  { id: 'c3', letter: 'ග', name: 'Ga', type: 'consonant', progress: 65, stars: 2, isDynamic: false },
+  // ප්‍රධාන ව්‍යංජන (Consonants - 35)
+  { id: 'c1', letter: 'ක', name: 'Ka', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
+  { id: 'c2', letter: 'ඛ', name: 'Kha', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
+  { id: 'c3', letter: 'ග', name: 'Ga', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
   { id: 'c4', letter: 'ඝ', name: 'Gha', type: 'consonant', progress: 0, stars: 0, isDynamic: true },
   { id: 'c5', letter: 'ඞ', name: 'Nga', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
   { id: 'c6', letter: 'ච', name: 'Cha', type: 'consonant', progress: 0, stars: 0, isDynamic: true },
@@ -45,31 +45,31 @@ const SLSL_ALPHABET: SignLetter[] = [
   { id: 'c10', letter: 'ඤ', name: 'Nya', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
   { id: 'c11', letter: 'ට', name: 'Ta', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
   { id: 'c12', letter: 'ඨ', name: 'Tha', type: 'consonant', progress: 0, stars: 0, isDynamic: true },
-  { id: 'c13', letter: 'ඩ', name: 'Da', type: 'consonant', progress: 85, stars: 3, isDynamic: false },
+  { id: 'c13', letter: 'ඩ', name: 'Da', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
   { id: 'c14', letter: 'ඪ', name: 'Dha', type: 'consonant', progress: 0, stars: 0, isDynamic: true },
   { id: 'c15', letter: 'ණ', name: 'Na (Murdhaja)', type: 'consonant', progress: 0, stars: 0, isDynamic: true },
-  { id: 'c16', letter: 'ත', name: 'Tha', type: 'consonant', progress: 45, stars: 1, isDynamic: false },
+  { id: 'c16', letter: 'ත', name: 'Tha', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
   { id: 'c17', letter: 'ථ', name: 'Thha', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
-  { id: 'c18', letter: 'ද', name: 'Da', type: 'consonant', progress: 85, stars: 3, isDynamic: false },
+  { id: 'c18', letter: 'ද', name: 'Da', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
   { id: 'c19', letter: 'ධ', name: 'Dha', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
-  { id: 'c20', letter: 'න', name: 'Na (Dantaja)', type: 'consonant', progress: 30, stars: 1, isDynamic: false },
-  { id: 'c21', letter: 'ප', name: 'Pa', type: 'consonant', progress: 70, stars: 2, isDynamic: false },
+  { id: 'c20', letter: 'න', name: 'Na (Dantaja)', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
+  { id: 'c21', letter: 'ප', name: 'Pa', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
   { id: 'c22', letter: 'ඵ', name: 'Pha', type: 'consonant', progress: 0, stars: 0, isDynamic: true },
-  { id: 'c23', letter: 'බ', name: 'Ba', type: 'consonant', progress: 55, stars: 1, isDynamic: false },
+  { id: 'c23', letter: 'බ', name: 'Ba', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
   { id: 'c24', letter: 'භ', name: 'Bha', type: 'consonant', progress: 0, stars: 0, isDynamic: true },
-  { id: 'c25', letter: 'ම', name: 'Ma', type: 'consonant', progress: 90, stars: 3, isDynamic: false },
-  { id: 'c26', letter: 'ය', name: 'Ya', type: 'consonant', progress: 20, stars: 0, isDynamic: false },
-  { id: 'c27', letter: 'ර', name: 'Ra', type: 'consonant', progress: 10, stars: 0, isDynamic: false },
-  { id: 'c28', letter: 'ල', name: 'La', type: 'consonant', progress: 40, stars: 1, isDynamic: false },
-  { id: 'c29', letter: 'ව', name: 'Wa', type: 'consonant', progress: 60, stars: 2, isDynamic: true },
+  { id: 'c25', letter: 'ම', name: 'Ma', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
+  { id: 'c26', letter: 'ය', name: 'Ya', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
+  { id: 'c27', letter: 'ර', name: 'Ra', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
+  { id: 'c28', letter: 'ල', name: 'La', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
+  { id: 'c29', letter: 'ව', name: 'Wa', type: 'consonant', progress: 0, stars: 0, isDynamic: true },
   { id: 'c30', letter: 'ශ', name: 'Sha', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
   { id: 'c31', letter: 'ෂ', name: 'Ssha', type: 'consonant', progress: 0, stars: 0, isDynamic: true },
-  { id: 'c32', letter: 'ස', name: 'Sa', type: 'consonant', progress: 15, stars: 0, isDynamic: false },
+  { id: 'c32', letter: 'ස', name: 'Sa', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
   { id: 'c33', letter: 'හ', name: 'Ha', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
   { id: 'c34', letter: 'ළ', name: 'La (Murdhaja)', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
   { id: 'c35', letter: 'ෆ', name: 'Fa', type: 'consonant', progress: 0, stars: 0, isDynamic: false },
 
-  // සඤ්ඤක සහ විශේෂ අකුරු
+  // සඤ්ඤක සහ විශේෂ අකුරු (9)
   { id: 's1', letter: 'ඟ', name: 'Nga (Sanyaka)', type: 'special', progress: 0, stars: 0, isDynamic: true },
   { id: 's2', letter: 'ඦ', name: 'Nja (Sanyaka)', type: 'special', progress: 0, stars: 0, isDynamic: true },
   { id: 's3', letter: 'ඬ', name: 'Nda (Sanyaka)', type: 'special', progress: 0, stars: 0, isDynamic: false },
@@ -81,227 +81,676 @@ const SLSL_ALPHABET: SignLetter[] = [
   { id: 's9', letter: 'වේ', name: 'We (Sign)', type: 'special', progress: 0, stars: 0, isDynamic: true },
 ];
 
+const ITEMS_PER_PAGE = 12;
+
+// 🎨 High-Contrast Professional Kid Themes (Crisp, Ultra-Sharp & Playful)
+const CARD_THEMES = [
+  {
+    topAccent: '#38bdf8', // Sky Blue
+    letterColor: '#0369a1',
+    badgeBg: '#e0f2fe',
+    badgeColor: '#0284c7',
+    glowColor: 'rgba(56, 189, 248, 0.35)',
+    barGrad: 'linear-gradient(90deg, #38bdf8, #0284c7)',
+    dotIcon: '🔹'
+  },
+  {
+    topAccent: '#fb7185', // Rose Pink
+    letterColor: '#be123c',
+    badgeBg: '#ffe4e6',
+    badgeColor: '#e11d48',
+    glowColor: 'rgba(251, 113, 133, 0.35)',
+    barGrad: 'linear-gradient(90deg, #fb7185, #e11d48)',
+    dotIcon: '🌸'
+  },
+  {
+    topAccent: '#34d399', // Mint Emerald
+    letterColor: '#047857',
+    badgeBg: '#d1fae5',
+    badgeColor: '#059669',
+    glowColor: 'rgba(52, 211, 153, 0.35)',
+    barGrad: 'linear-gradient(90deg, #34d399, #059669)',
+    dotIcon: '🍀'
+  },
+  {
+    topAccent: '#fb923c', // Sunset Coral
+    letterColor: '#c2410c',
+    badgeBg: '#ffedd5',
+    badgeColor: '#ea580c',
+    glowColor: 'rgba(251, 146, 60, 0.35)',
+    barGrad: 'linear-gradient(90deg, #fb923c, #ea580c)',
+    dotIcon: '🍊'
+  },
+  {
+    topAccent: '#c084fc', // Lilac Gem
+    letterColor: '#7e22ce',
+    badgeBg: '#f3e8ff',
+    badgeColor: '#9333ea',
+    glowColor: 'rgba(192, 132, 252, 0.35)',
+    barGrad: 'linear-gradient(90deg, #c084fc, #9333ea)',
+    dotIcon: '💜'
+  },
+  {
+    topAccent: '#facc15', // Warm Gold
+    letterColor: '#a16207',
+    badgeBg: '#fef9c3',
+    badgeColor: '#ca8a04',
+    glowColor: 'rgba(250, 204, 21, 0.35)',
+    barGrad: 'linear-gradient(90deg, #facc15, #ca8a04)',
+    dotIcon: '⭐'
+  }
+];
+
 export default function GloveDashboardPage() {
+  const [alphabetList, setAlphabetList] = useState<SignLetter[]>(SLSL_ALPHABET);
   const [selectedLetter, setSelectedLetter] = useState<SignLetter | null>(null);
-  const [filter, setFilter] = useState<'all' | 'vowels' | 'consonants' | 'special'>('all');
-  
+  const [filter, setFilter] = useState<'all' | 'vowels' | 'consonants' | 'special'>('vowels');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hoveredLetterId, setHoveredLetterId] = useState<string | null>(null);
+
+  // Live Glove Status
+  const [gloveOnline, setGloveOnline] = useState(false);
+  const [batteryLevel, setBatteryLevel] = useState<number>(0);
+
   // Navigation View State
   const [activeView, setActiveView] = useState<'dashboard' | 'testbench' | 'evaluation'>('dashboard');
 
   // Modal State
   const [showFitmentModal, setShowFitmentModal] = useState(false);
   const [fitmentStep, setFitmentStep] = useState<1 | 2 | 3>(1);
-  const [isCalibrating, setIsCalibrating] = useState(false);
-  const [calibrationProgress, setCalibrationProgress] = useState(0);
-  const [simulatedAngles, setSimulatedAngles] = useState({ thumb: 0, index: 0, middle: 0, ring: 0, little: 0 });
+  const [isConnecting, setIsConnecting] = useState(false);
 
-  const filteredAlphabet = SLSL_ALPHABET.filter(item => {
+  // Supabase Data Load & Realtime Sync
+  useEffect(() => {
+    const fetchStudentProgress = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('student_sign_progress')
+          .select('*')
+          .eq('student_id', 'kavisa-01');
+
+        if (!error && data && data.length > 0) {
+          setAlphabetList(prevList =>
+            prevList.map(letterItem => {
+              const saved = data.find(d => d.letter_id === letterItem.id);
+              if (saved) {
+                return {
+                  ...letterItem,
+                  progress: saved.progress ?? letterItem.progress,
+                  stars: saved.stars ?? letterItem.stars,
+                };
+              }
+              return letterItem;
+            })
+          );
+        }
+      } catch (err) {
+        console.error("Error fetching progress from Supabase:", err);
+      }
+    };
+
+    fetchStudentProgress();
+
+    const channel = supabase
+      .channel('realtime_dashboard_sync')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'student_sign_progress' },
+        () => {
+          fetchStudentProgress();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const filteredAlphabet = alphabetList.filter(item => {
     if (filter === 'vowels') return item.type === 'vowel';
     if (filter === 'consonants') return item.type === 'consonant';
     if (filter === 'special') return item.type === 'special';
     return true;
   });
 
-  const startSizingCheck = () => {
-    setIsCalibrating(true);
-    setCalibrationProgress(0);
+  const totalPages = Math.ceil(filteredAlphabet.length / ITEMS_PER_PAGE);
+  const displayedLetters = filteredAlphabet.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
-    const interval = setInterval(() => {
-      setCalibrationProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsCalibrating(false);
-          setFitmentStep(3);
-          return 100;
-        }
-        setSimulatedAngles({
-          thumb: Math.floor(Math.random() * 40) + 20,
-          index: Math.floor(Math.random() * 50) + 35,
-          middle: Math.floor(Math.random() * 50) + 35,
-          ring: Math.floor(Math.random() * 45) + 30,
-          little: Math.floor(Math.random() * 45) + 25,
-        });
-        return prev + 10;
-      });
-    }, 300);
+  const handleFilterChange = (newFilter: 'all' | 'vowels' | 'consonants' | 'special') => {
+    setFilter(newFilter);
+    setCurrentPage(1);
   };
 
-  // IF TESTBENCH VIEW IS ACTIVE
-  if (activeView === 'testbench') {
-    return <GloveTestBenchPage onBack={() => setActiveView('dashboard')} />;
-  }
 
-  // IF EVALUATION VIEW IS ACTIVE
-  if (activeView === 'evaluation') {
-    return <GloveEvaluationPage onBack={() => setActiveView('dashboard')} />;
-  }
-
-  // DEFAULT VIEW: MAIN ALPHABET DASHBOARD
   return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: 'Arial, sans-serif', paddingBottom: '60px' }}>
+    <div style={{ 
+      minHeight: '100vh', 
+      fontFamily: "'Quicksand', 'Nunito', 'Chalkboard SE', 'Comic Sans MS', sans-serif", 
+      padding: '24px 0 60px',
+      userSelect: 'none'
+    }}>
       
-      {/* 1. HERO SECTION (With Floating Quick-Actions Dock right inside it!) */}
-      <section style={{ maxWidth: '1550px', width: '95%', margin: '24px auto', padding: '0 16px' }}>
+      {/* 🌟 KEYFRAMES & MICRO-INTERACTIONS */}
+      <style>{`
+        @keyframes subtleFloat {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-3px); }
+        }
+        .kid-glass-card {
+          position: relative;
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-radius: 28px;
+          cursor: pointer;
+          transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+        }
+        .kid-glass-card:active {
+          transform: scale(0.96) translateY(2px) !important;
+        }
+      `}</style>
+
+      {/* 1. HERO SECTION */}
+      <section style={{ maxWidth: '1400px', width: '92%', margin: '0 auto 24px', padding: '0 12px' }}>
         <div style={{ 
-          background: 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)', 
-          borderRadius: '24px', padding: '36px 48px', color: '#ffffff',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          boxShadow: '0 10px 25px -5px rgba(37, 99, 235, 0.25)', flexWrap: 'wrap', gap: '24px'
+          background: 'rgba(255, 255, 255, 0.75)', 
+          backdropFilter: 'blur(24px)',
+          borderRadius: '32px', 
+          padding: '26px 36px', 
+          boxShadow: '0 16px 40px rgba(0, 0, 0, 0.05), inset 0 2px 4px rgba(255, 255, 255, 0.95)', 
+          border: '2px solid rgba(255, 255, 255, 0.9)',
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          flexWrap: 'wrap', 
+          gap: '20px'
         }}>
-          <div style={{ maxWidth: '750px' }}>
-            
-            {/* Battery & Hardware Status Badge */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(8px)', padding: '6px 14px', borderRadius: '20px', marginBottom: '14px', border: '1px solid rgba(255,255,255,0.2)' }}>
-              <span style={{ width: '10px', height: '10px', background: '#34d399', borderRadius: '50%', display: 'inline-block' }}></span>
-              <span style={{ fontSize: '13px', fontWeight: 'bold' }}>Smart Glove සක්‍රියයි 🔋 95% බැටරිය</span>
+          <div>
+            <div style={{ 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '8px', 
+              background: gloveOnline ? '#ecfdf5' : '#fef2f2', 
+              border: `1.5px solid ${gloveOnline ? '#a7f3d0' : '#fecaca'}`, 
+              padding: '6px 14px', 
+              borderRadius: '24px', 
+              marginBottom: '10px' 
+            }}>
+              <span style={{ 
+                width: '10px', 
+                height: '10px', 
+                background: gloveOnline ? '#10b981' : '#ef4444', 
+                borderRadius: '50%', 
+                display: 'inline-block', 
+                boxShadow: `0 0 8px ${gloveOnline ? '#10b981' : '#ef4444'}` 
+              }}></span>
+              <span style={{ fontSize: '13px', fontWeight: '800', color: gloveOnline ? '#065f46' : '#991b1b' }}>
+                {gloveOnline ? `Smart Glove සක්‍රියයි 🔋 ${batteryLevel}% බැටරිය` : 'Smart Glove විසන්ධි වී ඇත (Offline)'}
+              </span>
             </div>
 
-            <h2 style={{ fontSize: '36px', margin: '0 0 12px 0', fontWeight: '800' }}>
-              ස්මාර්ට් ග්ලවුස් ඉගෙනුම් මැදිරිය 🧤
-            </h2>
-            <p style={{ fontSize: '16px', color: '#e0e7ff', lineHeight: '1.6', margin: '0 0 24px 0' }}>
-              ඔබට අවශ්‍ය අකුර තෝරාගෙන පුහුණුව අරඹන්න. ස්මාර්ට් ග්ලවුස් එක මගින් ඔබේ ඇඟිලි නිවැරදි සංඥා ඉරියව්වට මෘදුව නවා මගපෙන්වයි (Active Kinesthetic Guidance).
-            </p>
-            
-            {/* ACTION BUTTONS DOCK (Header එකේ නැතිව මෙතැන ලස්සනට සවි කර ඇත) */}
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              <button 
-                onClick={() => { setShowFitmentModal(true); setFitmentStep(1); setCalibrationProgress(0); }}
-                style={{ background: '#fbbf24', color: '#78350f', border: 'none', padding: '12px 22px', borderRadius: '12px', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 12px rgba(251, 191, 36, 0.3)' }}
-              >
-                <span>⚙️</span> ග්ලවුස් එක පළඳින්න (Fitment Check)
-              </button>
-
-              <button 
-                onClick={() => setActiveView('testbench')}
-                style={{ background: 'rgba(255, 255, 255, 0.2)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.4)', padding: '12px 20px', borderRadius: '12px', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-              >
-                <span>🛠️</span> Hardware Test Bench
-              </button>
-
-              <button 
-                onClick={() => setActiveView('evaluation')}
-                style={{ background: 'rgba(255, 255, 255, 0.2)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.4)', padding: '12px 20px', borderRadius: '12px', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-              >
-                <span>📊</span> Research Report
-              </button>
-            </div>
-          </div>
-
-          {/* Video Placeholder */}
-          <div style={{ width: '320px', height: '210px', background: 'rgba(0, 0, 0, 0.25)', borderRadius: '20px', border: '2px solid rgba(255, 255, 255, 0.25)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-            <span style={{ fontSize: '55px' }}>🤖🦾</span>
-            <p style={{ margin: '8px 0 0 0', fontSize: '13px', color: '#cbd5e1', fontWeight: 'bold' }}>
-              3D Smart Glove Demonstration Video
+            <h1 style={{ fontSize: '32px', margin: '4px 0 8px 0', fontWeight: '900', color: '#0f172a', letterSpacing: '-0.5px' }}>
+              ස්මාර්ට් ග්ලවුස් ඉගෙනුම් මැදිරිය 🧤✨
+            </h1>
+            <p style={{ fontSize: '15px', color: '#475569', margin: 0, fontWeight: '700', maxWidth: '650px' }}>
+              කැමති අකුරක් තෝරන්න! ස්මාර්ට් ග්ලවුස් එකෙන් ඔයාගේ ඇඟිලි නිවැරදි සංඥාවට මෘදුව නවා පෙන්වාවි.
             </p>
           </div>
+
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
+  {/* ළමයාට අවශ්‍ය එකම බොත්තම පමණක් මෙහි තබන්න */}
+  <button 
+    onClick={() => { setShowFitmentModal(true); setFitmentStep(1); }}
+    style={{ 
+      background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', 
+      color: '#ffffff', 
+      border: '2px solid rgba(255, 255, 255, 0.7)', 
+      padding: '14px 28px', 
+      borderRadius: '22px', 
+      fontWeight: '800', 
+      fontSize: '15px', 
+      cursor: 'pointer', 
+      display: 'flex', 
+      alignItems: 'center', 
+      gap: '10px', 
+      boxShadow: '0 8px 20px rgba(217, 119, 6, 0.3)',
+      transition: 'all 0.2s'
+    }}
+    onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+    onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+  >
+    <span style={{ fontSize: '18px' }}>🧤</span> ග්ලවුස් එක පළඳින්න (Fitment Check)
+  </button>
+</div>
         </div>
       </section>
 
-      {/* 2. ALPHABET DASHBOARD GRID */}
-      <main style={{ maxWidth: '1550px', width: '95%', margin: '0 auto', padding: '0 16px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px', flexWrap: 'wrap', gap: '12px' }}>
+      {/* 2. ALPHABET DASHBOARD */}
+      <main style={{ maxWidth: '1400px', width: '92%', margin: '0 auto', padding: '0 12px' }}>
+        
+        {/* Navigation Bar */}
+        <div style={{ 
+          background: 'rgba(255, 255, 255, 0.72)', 
+          backdropFilter: 'blur(24px)', 
+          padding: '16px 26px', 
+          borderRadius: '28px', 
+          marginBottom: '24px',
+          border: '2px solid rgba(255, 255, 255, 0.9)',
+          boxShadow: '0 12px 30px rgba(0, 0, 0, 0.04), inset 0 2px 4px rgba(255, 255, 255, 0.95)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '14px'
+        }}>
           <div>
-            <h3 style={{ margin: 0, fontSize: '24px', color: '#0f172a', fontWeight: 'bold' }}>ශ්‍රී ලංකා සංඥා හෝඩිය (Complete SLSL Alphabet)</h3>
-            <span style={{ fontSize: '14px', color: '#64748b' }}>සම්පූර්ණ සංඥා අකුරු {SLSL_ALPHABET.length}ක් ඇතුළත් කර ඇත</span>
+            <h2 style={{ margin: 0, fontSize: '22px', color: '#0f172a', fontWeight: '900' }}>
+              {filter === 'vowels' && '🌈 ස්වර අකුරු (Vowels)'}
+              {filter === 'consonants' && '🚀 ව්‍යංජන අකුරු (Consonants)'}
+              {filter === 'special' && '✨ සඤ්ඤක / විශේෂ අකුරු'}
+              {filter === 'all' && '📚 සියලුම සංඥා අකුරු'}
+            </h2>
+            <span style={{ fontSize: '13px', color: '#64748b', fontWeight: '800' }}>
+              අකුරු {filteredAlphabet.length} න් {displayedLetters.length} ක් පෙන්වයි
+            </span>
           </div>
 
-          <div style={{ display: 'flex', gap: '8px', background: '#e2e8f0', padding: '4px', borderRadius: '24px', flexWrap: 'wrap' }}>
-            <button onClick={() => setFilter('all')} style={{ padding: '8px 18px', borderRadius: '20px', border: 'none', background: filter === 'all' ? '#0f172a' : 'transparent', color: filter === 'all' ? '#fff' : '#475569', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}>
-              සියල්ල ({SLSL_ALPHABET.length})
-            </button>
-            <button onClick={() => setFilter('vowels')} style={{ padding: '8px 18px', borderRadius: '20px', border: 'none', background: filter === 'vowels' ? '#2563eb' : 'transparent', color: filter === 'vowels' ? '#fff' : '#475569', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}>
-              ස්වර (16)
-            </button>
-            <button onClick={() => setFilter('consonants')} style={{ padding: '8px 18px', borderRadius: '20px', border: 'none', background: filter === 'consonants' ? '#2563eb' : 'transparent', color: filter === 'consonants' ? '#fff' : '#475569', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}>
-              ව්‍යංජන (35)
-            </button>
-            <button onClick={() => setFilter('special')} style={{ padding: '8px 18px', borderRadius: '20px', border: 'none', background: filter === 'special' ? '#2563eb' : 'transparent', color: filter === 'special' ? '#fff' : '#475569', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}>
-              සඤ්ඤක / විශේෂ (9)
-            </button>
+          <div style={{ display: 'flex', gap: '8px', background: '#f8fafc', padding: '6px', borderRadius: '24px', border: '1.5px solid #e2e8f0' }}>
+            {[
+              { id: 'vowels', label: '🌈 ස්වර (16)' },
+              { id: 'consonants', label: '🚀 ව්‍යංජන (35)' },
+              { id: 'special', label: '✨ සඤ්ඤක (9)' },
+              { id: 'all', label: 'සියල්ල (60)' },
+            ].map(tab => {
+              const active = filter === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleFilterChange(tab.id as any)}
+                  style={{
+                    padding: '8px 18px',
+                    borderRadius: '18px',
+                    border: 'none',
+                    background: active ? 'linear-gradient(135deg, #2563eb, #1d4ed8)' : 'transparent',
+                    color: active ? '#ffffff' : '#64748b',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    fontWeight: '800',
+                    boxShadow: active ? '0 6px 14px rgba(37, 99, 235, 0.35)' : 'none',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '16px' }}>
-          {filteredAlphabet.map((item) => (
-            <div 
-              key={item.id}
-              onClick={() => setSelectedLetter(item)}
-              style={{ background: '#ffffff', borderRadius: '18px', padding: '16px 12px', textAlign: 'center', border: selectedLetter?.id === item.id ? '2px solid #2563eb' : '1px solid #e2e8f0', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 2px 5px rgba(0,0,0,0.03)', position: 'relative' }}
-            >
-              {item.isDynamic && (
-                <span style={{ position: 'absolute', top: '8px', right: '8px', fontSize: '10px', background: '#fef3c7', color: '#92400e', padding: '2px 6px', borderRadius: '6px', fontWeight: 'bold' }}>
-                  චලනය
-                </span>
-              )}
-              <div style={{ fontSize: '38px', fontWeight: 'bold', color: '#1e293b', margin: '4px 0' }}>{item.letter}</div>
-              <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '8px' }}>{item.name}</div>
-              <div style={{ fontSize: '13px', color: '#f59e0b', marginBottom: '8px' }}>{'★'.repeat(item.stars)}{'☆'.repeat(3 - item.stars)}</div>
-              <div style={{ background: '#e2e8f0', height: '6px', borderRadius: '3px', overflow: 'hidden' }}>
-                <div style={{ width: `${item.progress}%`, height: '100%', background: item.progress > 75 ? '#10b981' : item.progress > 40 ? '#3b82f6' : item.progress > 0 ? '#f59e0b' : '#cbd5e1' }} />
+        {/* 💎 3. GLASS EFFECT CRYSTAL CARDS */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fill, minmax(195px, 1fr))', 
+          gap: '22px', 
+          marginBottom: '32px' 
+        }}>
+          {displayedLetters.map((item, index) => {
+            const theme = CARD_THEMES[index % CARD_THEMES.length];
+            const isHovered = hoveredLetterId === item.id;
+            const isSelected = selectedLetter?.id === item.id;
+
+            return (
+              <div
+                key={item.id}
+                className="kid-glass-card"
+                onClick={() => setSelectedLetter(item)}
+                onMouseEnter={() => setHoveredLetterId(item.id)}
+                onMouseLeave={() => setHoveredLetterId(null)}
+                style={{
+                  // 🔴 මෙතන තමයි Transparency එක වැඩි කරලා තියෙන්නේ (0.60)
+                  background: isHovered 
+                    ? 'rgba(255, 255, 255, 0.85)' 
+                    : 'rgba(255, 255, 255, 0.60)',
+                  border: isSelected
+                    ? '3px solid #2563eb'
+                    : isHovered
+                    ? `2.5px solid ${theme.topAccent}`
+                    : '2px solid rgba(255, 255, 255, 0.6)', // Border එකත් ටිකක් transparent කළා
+                  padding: '24px 18px 20px',
+                  boxShadow: isHovered
+                    ? `0 20px 32px -8px ${theme.glowColor}, 0 8px 16px rgba(15, 23, 42, 0.06), inset 0 2px 4px rgba(255, 255, 255, 0.8)`
+                    : '0 10px 24px -6px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(0, 0, 0, 0.02), inset 0 2px 4px rgba(255, 255, 255, 0.6)',
+                  transform: isHovered ? 'translateY(-6px)' : 'translateY(0)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  minHeight: '235px',
+                }}
+              >
+                {/* 🌟 Top Color Accent Indicator Bar */}
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: '25%',
+                  right: '25%',
+                  height: '4px',
+                  background: theme.topAccent,
+                  borderRadius: '0 0 6px 6px',
+                  boxShadow: `0 2px 8px ${theme.topAccent}`,
+                }} />
+
+                {/* 🏷️ Top Badges: Sparkle and Motion Indicator */}
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ 
+                    fontSize: '14px', 
+                    filter: isHovered ? 'scale(1.2)' : 'scale(1)',
+                    transition: 'transform 0.2s ease'
+                  }}>
+                    {theme.dotIcon}
+                  </span>
+
+                  {item.isDynamic && (
+                    <span style={{ 
+                      fontSize: '11px', 
+                      background: 'rgba(254, 243, 199, 0.85)', // මේකත් ටිකක් transparent කළා
+                      color: '#92400e', 
+                      border: '1.2px solid #fde68a', 
+                      padding: '3px 10px', 
+                      borderRadius: '12px', 
+                      fontWeight: '800',
+                      boxShadow: '0 2px 4px rgba(217, 119, 6, 0.12)'
+                    }}>
+                      👋 චලනය
+                    </span>
+                  )}
+                </div>
+
+                {/* 🔤 ULTRA-SHARP BOLD SINHALA LETTER (ඉංග්‍රීසි අකුර ඉවත් කර සිංහල අකුර ලොකු කර ඇත) */}
+                <div style={{
+                  fontSize: '65px', 
+                  fontWeight: '900',
+                  color: theme.letterColor,
+                  margin: '12px 0 16px 0', 
+                  lineHeight: '1.1',
+                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                  transform: isHovered ? 'scale(1.08)' : 'scale(1)',
+                  transition: 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                }}>
+                  {item.letter}
+                </div>
+
+                {/* ⭐ 3D SOLID GOLD STARS */}
+                <div style={{ 
+                  display: 'flex', 
+                  gap: '4px', 
+                  margin: '8px 0 6px 0', 
+                  fontSize: '17px',
+                }}>
+                  {[1, 2, 3].map(starIndex => (
+                    <span 
+                      key={starIndex}
+                      style={{ 
+                        filter: starIndex <= item.stars 
+                          ? 'drop-shadow(0 2px 4px rgba(245, 158, 11, 0.5))' 
+                          : 'grayscale(100%) opacity(25%)',
+                        transform: (isHovered && starIndex <= item.stars) ? 'scale(1.18)' : 'scale(1)',
+                        transition: 'transform 0.2s ease'
+                      }}
+                    >
+                      ⭐
+                    </span>
+                  ))}
+                </div>
+
+                {/* 🧪 CLEAN PROGRESS BAR */}
+                <div style={{ width: '100%' }}>
+                  <div style={{ 
+                    background: 'rgba(241, 245, 249, 0.6)', // Progress bar Background එකත් transparent කළා
+                    height: '10px', 
+                    borderRadius: '12px', 
+                    padding: '2px',
+                    border: '1.5px solid rgba(226, 232, 240, 0.8)',
+                    overflow: 'hidden'
+                  }}>
+                    <div style={{ 
+                      width: `${item.progress}%`, 
+                      height: '100%', 
+                      background: theme.barGrad,
+                      borderRadius: '10px',
+                      boxShadow: item.progress > 0 ? `0 0 8px ${theme.glowColor}` : 'none',
+                      transition: 'width 0.4s ease'
+                    }} />
+                  </div>
+                  
+                  <span style={{ 
+                    fontSize: '12px', 
+                    color: '#334155', 
+                    marginTop: '5px', 
+                    display: 'block', 
+                    fontWeight: '900',
+                    textAlign: 'center'
+                  }}>
+                    {item.progress}% පුහුණුයි
+                  </span>
+                </div>
               </div>
-              <span style={{ fontSize: '11px', color: '#64748b', marginTop: '5px', display: 'block' }}>{item.progress}% පුහුණුයි</span>
-            </div>
-          ))}
+            );
+          })}
         </div>
+
+        {/* 4. PAGE SWITCHER */}
+        {totalPages > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', margin: '20px 0' }}>
+            <button 
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              style={{ 
+                padding: '11px 22px', 
+                borderRadius: '20px', 
+                border: '2px solid rgba(255, 255, 255, 0.95)', 
+                background: currentPage === 1 ? 'rgba(226, 232, 240, 0.7)' : 'rgba(255, 255, 255, 0.85)', 
+                backdropFilter: 'blur(16px)',
+                color: currentPage === 1 ? '#94a3b8' : '#1e3a8a', 
+                fontWeight: '800', 
+                fontSize: '14px',
+                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                boxShadow: '0 6px 18px rgba(0,0,0,0.04)',
+                transition: 'all 0.2s'
+              }}
+            >
+              ◀ පෙර අකුරු
+            </button>
+
+            <span style={{ 
+              background: 'rgba(255, 255, 255, 0.85)', 
+              backdropFilter: 'blur(16px)',
+              border: '2px solid rgba(255, 255, 255, 0.95)',
+              padding: '9px 22px', 
+              borderRadius: '18px', 
+              fontWeight: '900', 
+              color: '#0f172a',
+              fontSize: '14px',
+              boxShadow: '0 6px 18px rgba(0,0,0,0.04)'
+            }}>
+              පිටුව {currentPage} / {totalPages}
+            </span>
+
+            <button 
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              style={{ 
+                padding: '11px 22px', 
+                borderRadius: '20px', 
+                border: '2px solid rgba(255, 255, 255, 0.95)', 
+                background: currentPage === totalPages ? 'rgba(226, 232, 240, 0.7)' : 'rgba(255, 255, 255, 0.85)', 
+                backdropFilter: 'blur(16px)',
+                color: currentPage === totalPages ? '#94a3b8' : '#1e3a8a', 
+                fontWeight: '800', 
+                fontSize: '14px',
+                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                boxShadow: '0 6px 18px rgba(0,0,0,0.04)',
+                transition: 'all 0.2s'
+              }}
+            >
+              ඊළඟ අකුරු ▶
+            </button>
+          </div>
+        )}
       </main>
 
-      {/* 3. MODAL: GLOVE FITMENT CHECK */}
+      {/* ========================================================================= */}
+      {/* 🟢 5. REAL BLUETOOTH & 2-POINT CALIBRATION MODAL (With Close ✕ Button)     */}
+      {/* ========================================================================= */}
       {showFitmentModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.75)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 4000 }}>
-          <div style={{ background: '#ffffff', borderRadius: '24px', padding: '32px', maxWidth: '500px', width: '90%', textAlign: 'center' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '16px' }}>
+        <div 
+          onClick={(e) => { if (e.target === e.currentTarget) setShowFitmentModal(false); }}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 4000 }}
+        >
+          <div style={{ 
+            position: 'relative',
+            background: 'rgba(255, 255, 255, 0.96)', 
+            backdropFilter: 'blur(24px)', 
+            borderRadius: '32px', 
+            padding: '36px', 
+            maxWidth: '480px', 
+            width: '90%', 
+            textAlign: 'center', 
+            boxShadow: '0 30px 60px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255, 255, 255, 0.95)',
+            border: '2px solid rgba(255, 255, 255, 0.95)'
+          }}>
+            
+            {/* ❌ CLOSE BUTTON */}
+            <button
+              onClick={() => setShowFitmentModal(false)}
+              style={{
+                position: 'absolute',
+                top: '18px',
+                right: '18px',
+                width: '38px',
+                height: '38px',
+                borderRadius: '50%',
+                background: '#f1f5f9',
+                border: '1.5px solid #e2e8f0',
+                color: '#64748b',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#fee2e2';
+                e.currentTarget.style.color = '#ef4444';
+                e.currentTarget.style.borderColor = '#fca5a5';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#f1f5f9';
+                e.currentTarget.style.color = '#64748b';
+                e.currentTarget.style.borderColor = '#e2e8f0';
+              }}
+              aria-label="Close"
+            >
+              ✕
+            </button>
+
+            {/* Step Indicators */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '20px' }}>
               {[1, 2, 3].map(stepNum => (
-                <div key={stepNum} style={{ width: '32px', height: '6px', borderRadius: '3px', background: fitmentStep >= stepNum ? '#2563eb' : '#e2e8f0' }} />
+                <div key={stepNum} style={{ width: '40px', height: '6px', borderRadius: '4px', background: fitmentStep >= stepNum ? '#2563eb' : '#e2e8f0' }} />
               ))}
             </div>
 
-            <h3 style={{ margin: '0 0 6px 0', fontSize: '20px', color: '#0f172a' }}>ග්ලවුස් එක පළඳින්න සහ පරීක්ෂා කරන්න 🧤</h3>
-            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>පියවර {fitmentStep} / 3</p>
+            <h3 style={{ margin: '0 0 6px 0', fontSize: '22px', color: '#0f172a', fontWeight: '900' }}>ග්ලවුස් එක පළඳින්න 🧤</h3>
+            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px', fontWeight: 'bold' }}>පියවර {fitmentStep} / 3</p>
 
+            {/* Step 1: Bluetooth Connection */}
             {fitmentStep === 1 && (
               <div>
-                <div style={{ width: '100%', height: '160px', background: '#f1f5f9', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
-                  <span style={{ fontSize: '50px' }}>🧤✨</span>
+                <div style={{ width: '100%', height: '140px', background: '#eff6ff', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px', border: '1.5px solid #dbeafe' }}>
+                  <span style={{ fontSize: '56px' }}>🧤📶</span>
                 </div>
-                <h4 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>පියවර 1: ග්ලවුස් එක අතට පළඳින්න</h4>
-                <p style={{ fontSize: '14px', color: '#475569' }}>ඇඟිලි මුදු ඇඟිලි තුඩුවලට දමා, මැණික් කටුවේ ඇති Velcro පටි තදින් අලවන්න.</p>
-                <button onClick={() => setFitmentStep(2)} style={{ marginTop: '20px', width: '100%', background: '#2563eb', color: '#fff', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
-                  ග්ලවුස් එක පැළඳුවා ➔ ඊළඟ පියවර
+                <h4 style={{ margin: '0 0 8px 0', fontSize: '17px', color: '#1e293b' }}>පියවර 1: ස්මාර්ට් ග්ලවුස් එක සම්බන්ධ කරන්න</h4>
+                <p style={{ fontSize: '14px', color: '#475569', lineHeight: '1.5' }}>
+                  ග්ලවුස් එක අතට පැළඳ Switch එක On කරන්න. පසුව පහත බොත්තම ඔබා Bluetooth මගින් සම්බන්ධ කරන්න.
+                </p>
+
+                <button 
+                  disabled={isConnecting}
+                  onClick={async () => {
+                    setIsConnecting(true);
+                    const success = await gloveBle.connect((data) => {
+                      if (data.battery) setBatteryLevel(data.battery);
+                      setGloveOnline(true);
+                    });
+                    setIsConnecting(false);
+                    if (success) {
+                      setGloveOnline(true);
+                      setFitmentStep(2);
+                    }
+                  }}
+                  style={{ 
+                    marginTop: '20px', 
+                    width: '100%', 
+                    background: isConnecting ? '#94a3b8' : 'linear-gradient(135deg, #2563eb, #1d4ed8)', 
+                    color: '#fff', 
+                    border: 'none', 
+                    padding: '14px', 
+                    borderRadius: '18px', 
+                    fontWeight: 'bold', 
+                    fontSize: '15px', 
+                    cursor: isConnecting ? 'not-allowed' : 'pointer', 
+                    boxShadow: '0 6px 18px rgba(37, 99, 235, 0.4)' 
+                  }}
+                >
+                  {isConnecting ? '⏳ සම්බන්ධ වෙමින් පවතී...' : '📶 බ්ලූටූත් මගින් ග්ලවුස් එක සම්බන්ධ කරන්න'}
                 </button>
               </div>
             )}
 
+            {/* Step 2: 2-Point Calibration */}
             {fitmentStep === 2 && (
               <div>
-                <h4 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>පියවර 2: අතේ ප්‍රමාණය සහ කෝණ පරීක්ෂාව</h4>
-                <p style={{ fontSize: '13px', color: '#475569' }}>අත දිගහැර (0°) පසුව මිට මොළවන්න (85°).</p>
-                <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '12px', border: '1px solid #e2e8f0', margin: '16px 0', textAlign: 'left' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: 'bold', marginBottom: '8px' }}>
-                    <span>Flex Sensors මිනුම්:</span>
-                    <span style={{ color: '#2563eb' }}>{calibrationProgress}%</span>
-                  </div>
-                  <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
-                    <div style={{ width: `${calibrationProgress}%`, height: '100%', background: '#2563eb', transition: 'width 0.3s' }} />
-                  </div>
-                </div>
-
-                {!isCalibrating && calibrationProgress < 100 && (
-                  <button onClick={startSizingCheck} style={{ width: '100%', background: '#10b981', color: '#fff', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
-                    🔄 පරීක්ෂාව ආරම්භ කරන්න
+                <h4 style={{ margin: '0 0 8px 0', fontSize: '17px', color: '#1e293b' }}>පියවර 2: අතේ ප්‍රමාණය ක්‍රමාංකනය (Calibration)</h4>
+                <p style={{ fontSize: '13px', color: '#475569', marginBottom: '18px', lineHeight: '1.5' }}>
+                  1. අත දිගහැර පළමු බොත්තම ඔබන්න. <br />
+                  2. පසුව මිට මොළවා දෙවන බොත්තම ඔබන්න.
+                </p>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+                  <button 
+                    onClick={() => {
+                      gloveBle.sendCommand({ action: "CALIBRATE_FLAT" });
+                      alert("✓ අත දිගහැරි කෝණය (0° Flat Hand Baseline) සාර්ථකව සටහන් කරගන්නා ලදී!");
+                    }}
+                    style={{ padding: '14px', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff', borderRadius: '16px', border: 'none', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)' }}
+                  >
+                    ✋ 1. අත දිගහරින්න (0° Baseline)
                   </button>
-                )}
-                {isCalibrating && <div style={{ fontSize: '13px', color: '#2563eb', fontWeight: 'bold' }}>Analyzing Hand Range...</div>}
+
+                  <button 
+                    onClick={() => {
+                      gloveBle.sendCommand({ action: "CALIBRATE_FIST" });
+                      alert("✓ මිට මොළවූ කෝණය (85° Closed Fist Max) සාර්ථකව සටහන් කරගන්නා ලදී!");
+                      setFitmentStep(3);
+                    }}
+                    style={{ padding: '14px', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', borderRadius: '16px', border: 'none', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}
+                  >
+                    ✊ 2. මිට මොළවන්න (85° Max Flexion)
+                  </button>
+                </div>
               </div>
             )}
 
+            {/* Step 3: Success Confirmation */}
             {fitmentStep === 3 && (
               <div>
-                <div style={{ fontSize: '60px', marginBottom: '12px' }}>🎉✨</div>
-                <h4 style={{ margin: '0 0 8px 0', fontSize: '20px', color: '#16a34a' }}>අතේ ප්‍රමාණය 100% ක් නිවැරදියි!</h4>
-                <p style={{ fontSize: '14px', color: '#475569', marginBottom: '20px' }}>සෙන්සර් කෝණ ඔබේ අතේ සයිස් එකට සාර්ථකව ගළපා ගන්නා ලදී.</p>
-                <button onClick={() => setShowFitmentModal(false)} style={{ width: '100%', background: '#16a34a', color: '#fff', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+                <div style={{ fontSize: '60px', marginBottom: '10px' }}>🎉✨</div>
+                <h4 style={{ margin: '0 0 6px 0', fontSize: '20px', color: '#16a34a', fontWeight: '900' }}>අතේ ප්‍රමාණය 100% ක් නිවැරදියි!</h4>
+                <p style={{ fontSize: '14px', color: '#475569', marginBottom: '24px' }}>සෙන්සර් කෝණ ඔබේ අතේ සයිස් එකට සාර්ථකව ගළපා ගන්නා ලදී.</p>
+                <button onClick={() => setShowFitmentModal(false)} style={{ width: '100%', background: 'linear-gradient(135deg, #16a34a, #15803d)', color: '#fff', border: 'none', padding: '14px', borderRadius: '18px', fontWeight: 'bold', fontSize: '15px', cursor: 'pointer', boxShadow: '0 6px 18px rgba(22, 163, 74, 0.4)' }}>
                   දැන් පුහුණුව අරඹන්න 🚀
                 </button>
               </div>
@@ -310,7 +759,7 @@ export default function GloveDashboardPage() {
         </div>
       )}
 
-      {/* 4. DYNAMIC PRACTICE SESSION OVERLAY */}
+      {/* 6. DYNAMIC PRACTICE SESSION OVERLAY */}
       {selectedLetter && (
         <GlovePracticeSession 
           letter={selectedLetter} 
